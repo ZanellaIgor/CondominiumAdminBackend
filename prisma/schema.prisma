@@ -1,0 +1,148 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(90)
+  email        String        @unique @db.VarChar(60)
+  password     String        @db.Text
+  profilePhoto String?
+  apartmentId  Int
+  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
+  warnings     Warning[]
+  reservations Reservation[]
+  maintenances Maintenance[]
+
+  UserAnswer UserAnswer[]
+}
+
+model Apartment {
+  id            Int          @id @default(autoincrement())
+  name          String       @db.VarChar(60)
+  condominiumId Int?
+  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  users         User[]
+}
+
+model Condominium {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(60)
+  apartments  Apartment[]
+  Warning     Warning[]
+  Reservation Reservation[]
+  Maintenance Maintenance[]
+
+  Survey Survey[]
+}
+
+enum Situation {
+  ABERTO
+  ANALISE
+  ATENDIDO
+  REABERTO
+  SUSPENSO
+}
+
+enum SituationReservation {
+  ABERTO
+  ANALISE
+  CONFIRMADO
+}
+
+enum Category {
+  MEDIA
+  ALTA
+  GRAVE
+  CRITICA
+}
+
+model SpaceReservation {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(60)
+  reservations Reservation[]
+}
+
+model Warning {
+  id            Int         @id @default(autoincrement())
+  title         String      @db.VarChar(60)
+  description   String?     @db.VarChar(120)
+  situation     Situation   @default(ABERTO)
+  category      Category
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  condominiumId Int
+  condominium   Condominium @relation(fields: [condominiumId], references: [id])
+}
+
+model Reservation {
+  id                 Int                  @id @default(autoincrement())
+  title              String               @db.VarChar(60)
+  description        String?              @db.VarChar(120)
+  userId             Int
+  user               User                 @relation(fields: [userId], references: [id])
+  startTime          String
+  endTime            String
+  dateReservation    DateTime
+  spaceReservationId Int
+  space              SpaceReservation     @relation(fields: [spaceReservationId], references: [id])
+  situation          SituationReservation
+  condominiumId      Int
+  condominium        Condominium          @relation(fields: [condominiumId], references: [id])
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model Maintenance {
+  id            Int          @id @default(autoincrement())
+  title         String       @db.VarChar(60)
+  description   String?      @db.VarChar(120)
+  situation     Situation    @default(ABERTO)
+  category      Category
+  userId        Int
+  user          User         @relation(fields: [userId], references: [id])
+  condominiumId Int?
+  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Survey {
+  id            Int         @id @default(autoincrement())
+  title         String      @db.VarChar(60)
+  description   String?     @db.VarChar(120)
+  questions     Question[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  condominiumId Int
+  condominium   Condominium @relation(fields: [condominiumId], references: [id])
+}
+
+model Question {
+  id       Int      @id @default(autoincrement())
+  text     String   @db.VarChar(120)
+  surveyId Int
+  survey   Survey   @relation(fields: [surveyId], references: [id])
+  answers  Answer[]
+}
+
+model Answer {
+  id          Int          @id @default(autoincrement())
+  text        String       @db.VarChar(120)
+  questionId  Int
+  question    Question     @relation(fields: [questionId], references: [id])
+  userAnswers UserAnswer[]
+}
+
+model UserAnswer {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  answerId Int
+  user     User   @relation(fields: [userId], references: [id])
+  answer   Answer @relation(fields: [answerId], references: [id])
+}
