@@ -6,8 +6,11 @@ import {
   Param,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { Prisma, Warning as WarningModel } from '@prisma/client';
+import { CreateWarningDto } from './dto/create-warning.dto';
+import { UpdateWarningDto } from './dto/update-warning.dto';
 import { WarningsService } from './warnings.service';
 
 @Controller('warnings')
@@ -15,33 +18,29 @@ export class WarningsController {
   constructor(private readonly warningsService: WarningsService) {}
 
   @Post()
-  async createWarning(
-    @Body() data: Prisma.WarningCreateInput,
-  ): Promise<WarningModel> {
-    return this.warningsService.createWarning(data);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  create(@Body() createWarningDto: CreateWarningDto) {
+    return this.warningsService.create(createWarningDto);
   }
 
   @Get()
-  async getWarnings(): Promise<WarningModel[]> {
-    console.log('oi');
-    return this.warningsService.getWarnings();
+  findAll() {
+    return this.warningsService.findAll();
   }
 
   @Get(':id')
-  async getWarningById(@Param('id') id: number): Promise<WarningModel> {
-    return this.warningsService.getWarningById(id);
+  findOne(@Param('id') id: string) {
+    return this.warningsService.findOne(+id);
   }
 
   @Patch(':id')
-  async updateWarning(
-    @Param('id') id: number,
-    @Body() data: Prisma.WarningUpdateInput,
-  ): Promise<WarningModel> {
-    return this.warningsService.updateWarning(id, data);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  update(@Param('id') id: string, @Body() updateWarningDto: UpdateWarningDto) {
+    return this.warningsService.update(+id, updateWarningDto);
   }
 
   @Delete(':id')
-  async deleteWarning(@Param('id') id: number): Promise<WarningModel> {
-    return this.warningsService.deleteWarning(id);
+  remove(@Param('id') id: string) {
+    return this.warningsService.remove(+id);
   }
 }

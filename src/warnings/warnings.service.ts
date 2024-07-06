@@ -1,41 +1,46 @@
 import { Injectable } from '@nestjs/common';
-
-import { Prisma, Warning } from '@prisma/client';
 import { PrismaService } from '../infra/prisma.service';
+import { CreateWarningDto } from './dto/create-warning.dto';
+import { UpdateWarningDto } from './dto/update-warning.dto';
 
 @Injectable()
 export class WarningsService {
   constructor(private prisma: PrismaService) {}
 
-  async createWarning(data: Prisma.WarningCreateInput): Promise<Warning> {
+  create(createWarningDto: CreateWarningDto) {
+    const { userId, condominiumId, ...data } = createWarningDto;
     return this.prisma.warning.create({
-      data,
+      data: {
+        ...data,
+        condominium: { connect: { id: condominiumId } },
+        user: { connect: { id: userId } },
+      },
     });
   }
 
-  async getWarnings(): Promise<Warning[]> {
+  findAll() {
     return this.prisma.warning.findMany();
   }
 
-  async getWarningById(id: number): Promise<Warning | null> {
-    return this.prisma.warning.findUnique({
-      where: { id },
-    });
+  findOne(id: number) {
+    return this.prisma.warning.findUnique({ where: { id } });
   }
 
-  async updateWarning(
-    id: number,
-    data: Prisma.WarningUpdateInput,
-  ): Promise<Warning> {
+  update(id: number, updateWarningDto: UpdateWarningDto) {
+    const { userId, condominiumId, ...data } = updateWarningDto;
     return this.prisma.warning.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        condominium: condominiumId
+          ? { connect: { id: condominiumId } }
+          : undefined,
+        user: userId ? { connect: { id: userId } } : undefined,
+      },
     });
   }
 
-  async deleteWarning(id: number): Promise<Warning> {
-    return this.prisma.warning.delete({
-      where: { id },
-    });
+  remove(id: number) {
+    return this.prisma.warning.delete({ where: { id } });
   }
 }

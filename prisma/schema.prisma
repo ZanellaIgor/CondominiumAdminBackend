@@ -18,27 +18,25 @@ model User {
   warnings     Warning[]
   reservations Reservation[]
   maintenances Maintenance[]
-
-  UserAnswer UserAnswer[]
+  userAnswers  UserAnswer[]
 }
 
 model Apartment {
-  id            Int          @id @default(autoincrement())
-  name          String       @db.VarChar(60)
-  condominiumId Int?
-  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  id            Int         @id @default(autoincrement())
+  name          String      @db.VarChar(60)
+  condominiumId Int
+  condominium   Condominium @relation(fields: [condominiumId], references: [id])
   users         User[]
 }
 
 model Condominium {
-  id          Int           @id @default(autoincrement())
-  name        String        @db.VarChar(60)
-  apartments  Apartment[]
-  Warning     Warning[]
-  Reservation Reservation[]
-  Maintenance Maintenance[]
-
-  Survey Survey[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(60)
+  apartments   Apartment[]
+  warnings     Warning[]
+  reservations Reservation[]
+  maintenances Maintenance[]
+  surveys      Survey[]
 }
 
 enum Situation {
@@ -99,17 +97,17 @@ model Reservation {
 }
 
 model Maintenance {
-  id            Int          @id @default(autoincrement())
-  title         String       @db.VarChar(60)
-  description   String?      @db.VarChar(120)
-  situation     Situation    @default(ABERTO)
+  id            Int         @id @default(autoincrement())
+  title         String      @db.VarChar(60)
+  description   String?     @db.VarChar(120)
+  situation     Situation   @default(ABERTO)
   category      Category
   userId        Int
-  user          User         @relation(fields: [userId], references: [id])
-  condominiumId Int?
-  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  user          User        @relation(fields: [userId], references: [id])
+  condominiumId Int
+  condominium   Condominium @relation(fields: [condominiumId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Survey {
