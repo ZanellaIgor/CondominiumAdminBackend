@@ -9,13 +9,15 @@ export class WarningsService {
 
   create(createWarningDto: CreateWarningDto) {
     const { userId, condominiumId, ...data } = createWarningDto;
-    return this.prisma.warning.create({
+    const teste = this.prisma.warning.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
         user: { connect: { id: userId } },
       },
     });
+    console.log(teste);
+    return teste;
   }
 
   findAll() {
