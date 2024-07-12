@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../infra/prisma.service';
 import { CreateWarningDto } from './dto/create-warning.dto';
+import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
 
 @Injectable()
@@ -9,19 +10,41 @@ export class WarningsService {
 
   create(createWarningDto: CreateWarningDto) {
     const { userId, condominiumId, ...data } = createWarningDto;
-    const teste = this.prisma.warning.create({
+    return this.prisma.warning.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
         user: { connect: { id: userId } },
       },
     });
-    console.log(teste);
-    return teste;
   }
 
-  findAll() {
-    return this.prisma.warning.findMany();
+  async findAll(query: FindAllWarningsDto) {
+    const { page, limit, title, status, category } = query;
+    const offset = (page - 1) * limit;
+
+    const where = {
+      AND: [
+        title ? { title: { contains: title } } : {},
+        status ? { status: status } : {},
+        category ? { category: category } : {},
+      ],
+    };
+
+    const warnings = await this.prisma.warning.findMany({
+      skip: offset,
+      take: limit,
+      where,
+    });
+
+    const totalCount = await this.prisma.warning.count({ where });
+
+    return {
+      data: warnings,
+      totalCount,
+      page,
+      limit,
+    };
   }
 
   findOne(id: number) {

@@ -1,0 +1,7 @@
+export enum Situation {
+  ABERTO = 'ABERTO',
+  ANALISE = 'ANALISE',
+  ATENDIDO = 'ATENDIDO',
+  REABERTO = 'REABERTO',
+  SUSPENSO = 'SUSPENSO',
+}

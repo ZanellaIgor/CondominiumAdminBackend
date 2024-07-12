@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateWarningDto } from './dto/create-warning.dto';
+import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
 import { WarningsService } from './warnings.service';
 
@@ -24,8 +26,9 @@ export class WarningsController {
   }
 
   @Get()
-  findAll() {
-    return this.warningsService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  findAll(@Query() query: FindAllWarningsDto) {
+    return this.warningsService.findAll(query);
   }
 
   @Get(':id')
