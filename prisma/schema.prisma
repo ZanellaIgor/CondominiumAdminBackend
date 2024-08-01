@@ -138,9 +138,10 @@ model Answer {
 }
 
 model UserAnswer {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   userId   Int
   answerId Int
-  user     User   @relation(fields: [userId], references: [id])
-  answer   Answer @relation(fields: [answerId], references: [id])
+  user     User    @relation(fields: [userId], references: [id])
+  answer   Answer  @relation(fields: [answerId], references: [id])
+  status   Boolean @default(true)
 }
