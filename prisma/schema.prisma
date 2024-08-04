@@ -8,25 +8,28 @@ generator client {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(90)
-  email        String        @unique @db.VarChar(60)
-  password     String        @db.Text
-  profilePhoto String?
-  apartmentId  Int
-  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
-  warnings     Warning[]
-  reservations Reservation[]
-  maintenances Maintenance[]
-  userAnswers  UserAnswer[]
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(90)
+  email         String        @unique @db.VarChar(60)
+  password      String        @db.Text
+  profilePhoto  String?
+  apartmentId   Int
+  apartment     Apartment     @relation(fields: [apartmentId], references: [id])
+  warnings      Warning[]
+  reservations  Reservation[]
+  maintenances  Maintenance[]
+  userAnswers   UserAnswer[]
+  condominiumId Int
+  condominium   Condominium   @relation(fields: [condominiumId], references: [id])
 }
 
 model Apartment {
-  id            Int         @id @default(autoincrement())
-  name          String      @db.VarChar(60)
+  id            Int          @id @default(autoincrement())
+  name          String       @db.VarChar(60)
   condominiumId Int
-  condominium   Condominium @relation(fields: [condominiumId], references: [id])
+  condominium   Condominium  @relation(fields: [condominiumId], references: [id])
   users         User[]
+  UserAnswer    UserAnswer[]
 }
 
 model Condominium {
@@ -37,6 +40,8 @@ model Condominium {
   reservations Reservation[]
   maintenances Maintenance[]
   surveys      Survey[]
+  UserAnswer   UserAnswer[]
+  User         User[]
 }
 
 enum Situation {
@@ -144,4 +149,9 @@ model UserAnswer {
   user     User    @relation(fields: [userId], references: [id])
   answer   Answer  @relation(fields: [answerId], references: [id])
   status   Boolean @default(true)
+
+  Apartment     Apartment?   @relation(fields: [apartmentId], references: [id])
+  apartmentId   Int?
+  Condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  condominiumId Int?
 }

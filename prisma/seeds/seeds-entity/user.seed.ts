@@ -5,8 +5,12 @@ export async function userSeed(prisma: PrismaClient) {
     name: 'Usuário de teste',
     email: 'usuario@teste.com',
     password: 'senha123',
-    status: true,
     apartment: {
+      connect: {
+        id: 1,
+      },
+    },
+    condominium: {
       connect: {
         id: 1,
       },
