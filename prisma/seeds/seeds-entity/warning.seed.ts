@@ -1,6 +1,7 @@
-import { Category, PrismaClient, Situation } from '@prisma/client';
+import { Category, Situation } from '@prisma/client';
+import { prismaSeed } from '../prisma-seeds';
 
-export async function warningSeed(prisma: PrismaClient) {
+export async function warningSeed() {
   const data = {
     title: 'Aviso de teste',
     description: 'Descrição do aviso de teste',
@@ -19,7 +20,7 @@ export async function warningSeed(prisma: PrismaClient) {
   };
 
   try {
-    await prisma.warning.upsert({
+    await prismaSeed.warning.upsert({
       where: { id: 1 },
       update: {},
       create: data,

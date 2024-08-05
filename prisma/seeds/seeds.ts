@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { apartmentSeed } from './seeds-entity/apartment.seed';
+import { reservationSeed } from './seeds-entity/reservation.seed';
+import { spaceSeed } from './seeds-entity/space.seed';
 import { userSeed } from './seeds-entity/user.seed';
 import { warningSeed } from './seeds-entity/warning.seed';
 
@@ -7,10 +9,12 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
+    await userSeed();
+    await apartmentSeed();
+    await spaceSeed();
+    await warningSeed();
+    await reservationSeed();
     console.log('Seeds executados com sucesso!');
-    await apartmentSeed(prisma);
-    await userSeed(prisma);
-    await warningSeed(prisma);
   } catch (error) {
     console.error('Erro ao executar os seeds:', error);
   } finally {

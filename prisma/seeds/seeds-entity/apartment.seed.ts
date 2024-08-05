@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prismaSeed } from '../prisma-seeds';
 
-export async function apartmentSeed(prisma: PrismaClient) {
+export async function apartmentSeed() {
   const data = {
     name: 'Apartamento de teste',
     condominium: {
@@ -16,7 +16,7 @@ export async function apartmentSeed(prisma: PrismaClient) {
   };
 
   try {
-    await prisma.apartment.upsert({
+    await prismaSeed.apartment.upsert({
       where: { id: 1 },
       update: {},
       create: data,

@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prismaSeed } from '../prisma-seeds';
 
-export async function userSeed(prisma: PrismaClient) {
+export async function userSeed() {
   const data = {
     name: 'Usuário de teste',
     email: 'usuario@teste.com',
@@ -18,7 +18,7 @@ export async function userSeed(prisma: PrismaClient) {
   };
 
   try {
-    await prisma.user.upsert({
+    await prismaSeed.user.upsert({
       where: { email: 'usuario@teste.com' },
       update: {},
       create: data,
