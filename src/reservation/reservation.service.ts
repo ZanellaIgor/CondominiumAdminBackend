@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../infra/prisma.service';
-
-import { CreateReserveDto, UpdateReserveDto } from './dto/create-reserve.dto';
-import { FindAllReserveDto } from './dto/filter-reserve.dto';
+import { CreateReservationDto } from './dto/create-reservation.dto';
+import { FindAllReservationDto } from './dto/filter-reservation.dto';
+import { UpdateReservationDto } from './dto/update-reservation.dto';
 
 @Injectable()
-export class ReserveService {
+export class ReservationService {
   constructor(private prisma: PrismaService) {}
 
-  create(createReserveDto: CreateReserveDto) {
+  create(createReserveDto: CreateReservationDto) {
     const { userId, condominiumId, spaceReservationId, ...data } =
       createReserveDto;
     return this.prisma.reservation.create({
@@ -23,7 +23,7 @@ export class ReserveService {
     });
   }
 
-  async findAll(query: FindAllReserveDto) {
+  async findAll(query: FindAllReservationDto) {
     const { page, limit, title } = query;
     const offset = (page - 1) * limit;
 
@@ -51,7 +51,7 @@ export class ReserveService {
     return this.prisma.reservation.findUnique({ where: { id } });
   }
 
-  update(id: number, updateReserveDto: UpdateReserveDto) {
+  update(id: number, updateReserveDto: UpdateReservationDto) {
     const { userId, condominiumId, spaceReservationId, ...data } =
       updateReserveDto;
     return this.prisma.reservation.update({

@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { SituationReservation } from 'src/utils/enum/status-reservation';
 
-export class FindAllReserveDto {
+export class FindAllReservationDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()

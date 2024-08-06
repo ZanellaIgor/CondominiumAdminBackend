@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { SituationReservation } from 'src/utils/enum/status-reservation';
 
-export class CreateReserveDto {
+export class CreateReservationDto {
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -49,4 +49,4 @@ export class CreateReserveDto {
   condominiumId: number;
 }
 
-export class UpdateReserveDto extends PartialType(CreateReserveDto) {}
+export class UpdateReserveDto extends PartialType(CreateReservationDto) {}
