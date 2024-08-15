@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsDateString,
+  IsDate,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -32,7 +32,7 @@ export class CreateReservationDto {
   endTime: string;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsDate()
   @Type(() => Date)
   dateReservation: Date;
 
