@@ -89,9 +89,8 @@ model Reservation {
   description        String?              @db.VarChar(120)
   userId             Int
   user               User                 @relation(fields: [userId], references: [id])
-  startTime          String
-  endTime            String
-  dateReservation    DateTime
+  startDateTime      DateTime
+  endDateTime        DateTime
   spaceReservationId Int
   space              SpaceReservation     @relation(fields: [spaceReservationId], references: [id])
   situation          SituationReservation

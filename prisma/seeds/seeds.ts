@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    await userSeed();
     await apartmentSeed();
+    await userSeed();
     await spaceSeed();
     await warningSeed();
     await reservationSeed();

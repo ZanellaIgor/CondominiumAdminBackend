@@ -24,17 +24,14 @@ export class CreateReservationDto {
   userId: number;
 
   @IsNotEmpty()
-  @IsString()
-  startTime: string;
-
-  @IsNotEmpty()
-  @IsString()
-  endTime: string;
+  @IsDate()
+  @Type(() => Date)
+  startDateTime: Date;
 
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
-  dateReservation: Date;
+  endDateTime: Date;
 
   @IsNotEmpty()
   @IsInt()
