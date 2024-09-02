@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../infra/prisma.service';
+
+import { PrismaService } from 'src/infra/prisma.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { FindAllReservationDto } from './dto/filter-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
