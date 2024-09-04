@@ -33,15 +33,16 @@ model Apartment {
 }
 
 model Condominium {
-  id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(60)
-  apartments   Apartment[]
-  warnings     Warning[]
-  reservations Reservation[]
-  maintenances Maintenance[]
-  surveys      Survey[]
-  UserAnswer   UserAnswer[]
-  User         User[]
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(60)
+  apartments       Apartment[]
+  warnings         Warning[]
+  reservations     Reservation[]
+  maintenances     Maintenance[]
+  surveys          Survey[]
+  UserAnswer       UserAnswer[]
+  User             User[]
+  SpaceReservation SpaceReservation[]
 }
 
 enum Situation {
@@ -66,9 +67,11 @@ enum Category {
 }
 
 model SpaceReservation {
-  id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(60)
-  reservations Reservation[]
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(60)
+  condominiumId Int
+  condominium   Condominium   @relation(fields: [condominiumId], references: [id])
+  reservations  Reservation[]
 }
 
 model Warning {
