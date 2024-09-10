@@ -1,15 +1,18 @@
-// app.module.ts
 import { Module } from '@nestjs/common';
-import { PrismaService } from './infra/prisma.service';
+import { PersistenceModule } from './infra/persistence.module'; // Ajuste o caminho conforme necessário
 
+import { CondominiumModule } from './core/condominium/condominium/condominium.module';
 import { ReservationModule } from './core/reservation/reservation.module';
-import { ReservationService } from './core/reservation/reservation.service';
 import { UserModule } from './core/user/user.module';
-import { UserService } from './core/user/user.service';
 import { WarningsModule } from './core/warnings/warnings.module';
 
 @Module({
-  imports: [WarningsModule, ReservationModule, UserModule],
-  providers: [PrismaService, ReservationService, UserService],
+  imports: [
+    PersistenceModule,
+    WarningsModule,
+    ReservationModule,
+    UserModule,
+    CondominiumModule,
+  ],
 })
 export class AppModule {}
