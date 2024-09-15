@@ -8,19 +8,19 @@ generator client {
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  name          String        @db.VarChar(90)
-  email         String        @unique @db.VarChar(60)
-  password      String        @db.Text
-  profilePhoto  String?
-  apartmentId   Int
-  apartment     Apartment     @relation(fields: [apartmentId], references: [id])
-  warnings      Warning[]
-  reservations  Reservation[]
-  maintenances  Maintenance[]
-  userAnswers   UserAnswer[]
-  condominiumId Int
-  condominium   Condominium   @relation(fields: [condominiumId], references: [id])
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(90)
+  email        String        @unique @db.VarChar(60)
+  password     String        @db.Text
+  profilePhoto String?
+  role         Role
+  apartmentId  Int
+  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
+  warnings     Warning[]
+  reservations Reservation[]
+  maintenances Maintenance[]
+  userAnswers  UserAnswer[]
+  condominiums Condominium[] @relation("UserCondominiums")
 }
 
 model Apartment {
@@ -29,20 +29,25 @@ model Apartment {
   condominiumId Int
   condominium   Condominium  @relation(fields: [condominiumId], references: [id])
   users         User[]
-  UserAnswer    UserAnswer[]
+  userAnswers   UserAnswer[]
 }
 
 model Condominium {
-  id               Int                @id @default(autoincrement())
-  name             String             @db.VarChar(60)
-  apartments       Apartment[]
-  warnings         Warning[]
-  reservations     Reservation[]
-  maintenances     Maintenance[]
-  surveys          Survey[]
-  UserAnswer       UserAnswer[]
-  User             User[]
-  SpaceReservation SpaceReservation[]
+  id                Int                @id @default(autoincrement())
+  name              String             @db.VarChar(60)
+  apartments        Apartment[]
+  warnings          Warning[]
+  reservations      Reservation[]
+  maintenances      Maintenance[]
+  surveys           Survey[]
+  userAnswers       UserAnswer[]
+  spaceReservations SpaceReservation[]
+  users             User[]             @relation("UserCondominiums")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 enum Situation {
@@ -145,13 +150,12 @@ model Answer {
 }
 
 model UserAnswer {
-  id       Int     @id @default(autoincrement())
-  userId   Int
-  answerId Int
-  user     User    @relation(fields: [userId], references: [id])
-  answer   Answer  @relation(fields: [answerId], references: [id])
-  status   Boolean @default(true)
-
+  id            Int          @id @default(autoincrement())
+  userId        Int
+  answerId      Int
+  user          User         @relation(fields: [userId], references: [id])
+  answer        Answer       @relation(fields: [answerId], references: [id])
+  status        Boolean      @default(true)
   Apartment     Apartment?   @relation(fields: [apartmentId], references: [id])
   apartmentId   Int?
   Condominium   Condominium? @relation(fields: [condominiumId], references: [id])

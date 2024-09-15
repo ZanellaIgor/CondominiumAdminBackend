@@ -1,13 +1,17 @@
 import { prismaSeed } from '../prisma-seeds';
 
 export async function condominiumSeed() {
-  const data = {
-    name: 'Condominio de teste',
-    id: 1,
-  };
   try {
     await prismaSeed.condominium.create({
-      data,
+      data: {
+        name: 'Condomínio Sol',
+      },
+    });
+
+    await prismaSeed.condominium.create({
+      data: {
+        name: 'Condomínio Lua',
+      },
     });
     console.log('Condominio criado com sucesso!');
   } catch (error) {

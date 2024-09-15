@@ -1,4 +1,13 @@
-import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Role } from '@prisma/client';
+import {
+  IsArray,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -17,6 +26,10 @@ export class CreateUserDto {
   @IsNumber()
   apartmentId: number;
 
-  @IsNumber()
-  condominiumId: number;
+  @IsNotEmpty()
+  @IsArray()
+  condominiumIds: number[];
+
+  @IsEnum(Role)
+  role: Role;
 }

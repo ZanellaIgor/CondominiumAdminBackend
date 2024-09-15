@@ -9,11 +9,22 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateUserDto) {
-    return this.prisma.user.create({ data });
+    const { apartmentId, condominiumIds, ...rest } = data;
+
+    return this.prisma.user.create({
+      data: {
+        ...rest,
+        apartment: apartmentId ? { connect: { id: apartmentId } } : undefined,
+        // Conecta os condomínios
+        condominiums: {
+          connect: condominiumIds.map((id) => ({ id })),
+        },
+      },
+    });
   }
 
   async findAll(query: FindAllUserDto) {
-    const { page, limit, email } = query;
+    const { page = 1, limit = 10, email } = query;
     const offset = (page - 1) * limit;
 
     const where = {
@@ -24,6 +35,10 @@ export class UserService {
       skip: offset,
       take: limit,
       where,
+      include: {
+        apartment: true,
+        condominiums: true,
+      },
     });
 
     const totalCount = await this.prisma.user.count({ where });
@@ -36,11 +51,28 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        apartment: true,
+        condominiums: true,
+      },
+    });
   }
 
   async update(id: number, data: UpdateUserDto) {
-    return this.prisma.user.update({ where: { id }, data });
+    const { apartmentId, condominiumIds, ...rest } = data;
+
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        ...rest,
+        apartment: apartmentId ? { connect: { id: apartmentId } } : undefined,
+        condominiums: condominiumIds
+          ? { set: condominiumIds.map((id) => ({ id })) }
+          : undefined,
+      },
+    });
   }
 
   async remove(id: number) {

@@ -9,7 +9,7 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 export class ReservationService {
   constructor(private prisma: PrismaService) {}
 
-  create(createReserveDto: CreateReservationDto) {
+  async create(createReserveDto: CreateReservationDto) {
     const { userId, condominiumId, spaceReservationId, ...data } =
       createReserveDto;
     return this.prisma.reservation.create({
@@ -48,11 +48,11 @@ export class ReservationService {
     };
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.prisma.reservation.findUnique({ where: { id } });
   }
 
-  update(id: number, updateReserveDto: UpdateReservationDto) {
+  async update(id: number, updateReserveDto: UpdateReservationDto) {
     const { userId, condominiumId, spaceReservationId, ...data } =
       updateReserveDto;
     return this.prisma.reservation.update({
@@ -70,7 +70,7 @@ export class ReservationService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.prisma.reservation.delete({ where: { id } });
   }
 }
