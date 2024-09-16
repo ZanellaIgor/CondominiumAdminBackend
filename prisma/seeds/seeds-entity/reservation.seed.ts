@@ -27,8 +27,8 @@ export async function reservationSeed() {
       update: {},
       create: data,
     });
-    console.log('Condominio criado com sucesso!');
+    console.log('Reserva criada com sucesso!');
   } catch (error) {
-    console.log('Condominio não criado', error);
+    console.log('Reserva não criada', error);
   }
 }
