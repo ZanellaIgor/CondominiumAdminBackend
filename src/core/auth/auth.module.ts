@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { CryptoService } from '../crypto/crypto.service';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller'; // Importe o AuthController
 import { AuthService } from './auth.service';
@@ -21,8 +22,8 @@ import { LocalStrategy } from './local.strategy';
     }),
     UserModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  controllers: [AuthController], // Registre o AuthController
+  providers: [AuthService, LocalStrategy, JwtStrategy, CryptoService],
+  controllers: [AuthController],
   exports: [AuthService],
 })
 export class AuthModule {}

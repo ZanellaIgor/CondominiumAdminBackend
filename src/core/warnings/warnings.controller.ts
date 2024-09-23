@@ -7,9 +7,11 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateWarningDto } from './dto/create-warning.dto';
 import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
@@ -26,6 +28,7 @@ export class WarningsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   findAll(@Query() query: FindAllWarningsDto) {
     return this.warningsService.findAll(query);
