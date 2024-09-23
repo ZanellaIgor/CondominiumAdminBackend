@@ -9,4 +9,7 @@ export class LoginDto {
 
   @IsString()
   key: string;
+
+  @IsString()
+  authTag: string;
 }
