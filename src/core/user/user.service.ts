@@ -9,15 +9,16 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateUserDto) {
-    const { apartmentId, condominiumIds, ...rest } = data;
+    const { apartmentIds, condominiumIds, ...rest } = data;
 
     return this.prisma.user.create({
       data: {
         ...rest,
-        apartment: apartmentId ? { connect: { id: apartmentId } } : undefined,
-        // Conecta os condomínios
+        apartments: {
+          connect: apartmentIds?.map((id) => ({ id })),
+        },
         condominiums: {
-          connect: condominiumIds.map((id) => ({ id })),
+          connect: condominiumIds?.map((id) => ({ id })),
         },
       },
     });
@@ -36,7 +37,7 @@ export class UserService {
       take: limit,
       where,
       include: {
-        apartment: true,
+        apartments: true,
         condominiums: true,
       },
     });
@@ -54,25 +55,63 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: { id },
       include: {
-        apartment: true,
+        apartments: true,
         condominiums: true,
       },
     });
   }
 
   async update(id: number, data: UpdateUserDto) {
-    const { apartmentId, condominiumIds, ...rest } = data;
+    const { apartmentIds, condominiumIds } = data;
 
-    return this.prisma.user.update({
-      where: { id },
-      data: {
-        ...rest,
-        apartment: apartmentId ? { connect: { id: apartmentId } } : undefined,
-        condominiums: condominiumIds
-          ? { set: condominiumIds.map((id) => ({ id })) }
-          : undefined,
+    const currentUser = await this.prisma.user.findUnique({
+      where: { id: Number(id) },
+      include: {
+        apartments: true,
+        condominiums: true,
       },
     });
+
+    const currentApartmentIds = currentUser.apartments?.map(
+      (apartment) => apartment.id,
+    );
+    const currentCondominiumIds = currentUser.condominiums?.map(
+      (condominium) => condominium.id,
+    );
+
+    const apartmentsToConnect = apartmentIds?.filter(
+      (id) => !currentApartmentIds.includes(id),
+    );
+    const apartmentsToDisconnect = currentApartmentIds?.filter(
+      (id) => !apartmentIds.includes(id),
+    );
+
+    const condominiumsToConnect = condominiumIds?.filter(
+      (id) => !currentCondominiumIds.includes(id),
+    );
+    const condominiumsToDisconnect = currentCondominiumIds?.filter(
+      (id) => !condominiumIds.includes(id),
+    );
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: Number(id) },
+      data: {
+        apartments: {
+          connect: apartmentsToConnect.map((id) => ({ id })),
+          disconnect: apartmentsToDisconnect.map((id) => ({ id })),
+        },
+        condominiums: {
+          connect: condominiumsToConnect.map((id) => ({ id })),
+          disconnect: condominiumsToDisconnect.map((id) => ({ id })),
+        },
+      },
+      include: {
+        apartments: true,
+        condominiums: true,
+      },
+    });
+
+    return updatedUser;
   }
 
   async remove(id: number) {

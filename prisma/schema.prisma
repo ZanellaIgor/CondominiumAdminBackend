@@ -14,13 +14,12 @@ model User {
   password     String        @db.Text
   profilePhoto String?
   role         Role
-  apartmentId  Int
-  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
+  apartments   Apartment[]   @relation("UserApartments")
+  condominiums Condominium[] @relation("UserCondominiums")
   warnings     Warning[]
   reservations Reservation[]
   maintenances Maintenance[]
   userAnswers  UserAnswer[]
-  condominiums Condominium[] @relation("UserCondominiums")
 }
 
 model Apartment {
@@ -28,7 +27,7 @@ model Apartment {
   name          String       @db.VarChar(60)
   condominiumId Int
   condominium   Condominium  @relation(fields: [condominiumId], references: [id])
-  users         User[]
+  users         User[]       @relation("UserApartments")
   userAnswers   UserAnswer[]
 }
 

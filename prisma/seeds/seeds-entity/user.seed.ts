@@ -9,7 +9,6 @@ export async function userSeed() {
         password: 'adminpassword',
         role: 'ADMIN',
         profilePhoto: 'link-to-photo.jpg',
-        apartmentId: 1,
         condominiums: {
           connect: [{ id: 1 }, { id: 2 }],
         },
@@ -18,17 +17,20 @@ export async function userSeed() {
 
     await prismaSeed.user.create({
       data: {
-        name: 'Regular User',
-        email: 'user@example.com',
+        name: 'User condominium1',
+        email: 'usercond1@example.com',
         password: 'userpassword',
         role: 'USER',
         profilePhoto: 'link-to-photo.jpg',
-        apartmentId: 1,
+        apartments: {
+          connect: [{ id: 1 }],
+        },
         condominiums: {
-          connect: { id: 1 },
+          connect: [{ id: 1 }],
         },
       },
     });
+
     console.log('Usuário criado ou atualizado com sucesso!');
   } catch (error) {
     console.error('Erro ao criar ou atualizar o usuário', error);

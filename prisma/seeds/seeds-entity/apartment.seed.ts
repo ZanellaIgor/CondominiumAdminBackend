@@ -15,8 +15,8 @@ export async function apartmentSeed() {
         condominiumId: 2,
       },
     });
-    console.log('Apartamento criado ou atualizado com sucesso!');
+    console.log('Apartamentos criado ou atualizado com sucesso!');
   } catch (error) {
-    console.error('Erro ao criar ou atualizar o apartamento', error);
+    console.error('Erro ao criar ou atualizar o apartamentos', error);
   }
 }

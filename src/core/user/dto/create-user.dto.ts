@@ -4,7 +4,6 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -23,8 +22,9 @@ export class CreateUserDto {
   @IsString()
   profilePhoto?: string;
 
-  @IsNumber()
-  apartmentId: number;
+  @IsArray()
+  @IsOptional()
+  apartmentIds?: number[];
 
   @IsNotEmpty()
   @IsArray()
