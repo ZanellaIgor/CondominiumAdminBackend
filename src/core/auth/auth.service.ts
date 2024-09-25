@@ -31,7 +31,7 @@ export class AuthService {
     password: string,
   ): Promise<UserResponse | null> {
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email, password },
       select: {
         id: true,
         name: true,
@@ -51,21 +51,20 @@ export class AuthService {
         },
       },
     });
-
+    console.log(user);
     return user ? user : null;
   }
 
   async login(user: UserResponse) {
-    const payload = { email: user.email, sub: user.id };
-
-    const token = this.jwtService.sign(payload);
-
-    const dataToEncrypt = {
-      access_token: token,
+    const payload = {
+      email: user.email,
+      id: user.id,
       isAdmin: user.role === 'ADMIN',
       condominiumIds: user.condominiums?.map((condominium) => condominium.id),
       apartmentIds: user.apartments?.map((apartment) => apartment.id),
     };
+
+    const dataToEncrypt = this.jwtService.sign(payload);
 
     const encryptedData = await this.cryptoService.encryptData(
       JSON.stringify(dataToEncrypt),
