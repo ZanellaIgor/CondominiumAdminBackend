@@ -51,7 +51,7 @@ export class AuthService {
         },
       },
     });
-    console.log(user);
+
     return user ? user : null;
   }
 
@@ -64,12 +64,8 @@ export class AuthService {
       apartmentIds: user.apartments?.map((apartment) => apartment.id),
     };
 
-    const dataToEncrypt = this.jwtService.sign(payload);
+    const dataJWT = { acess_token: this.jwtService.sign(payload) };
 
-    const encryptedData = await this.cryptoService.encryptData(
-      JSON.stringify(dataToEncrypt),
-    );
-
-    return encryptedData;
+    return dataJWT;
   }
 }

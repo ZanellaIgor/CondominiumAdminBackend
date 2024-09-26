@@ -22,6 +22,7 @@ export class WarningsController {
   constructor(private readonly warningsService: WarningsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createWarningDto: CreateWarningDto) {
     return this.warningsService.create(createWarningDto);
@@ -35,17 +36,20 @@ export class WarningsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.warningsService.findOne(+id);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(@Param('id') id: string, @Body() updateWarningDto: UpdateWarningDto) {
     return this.warningsService.update(+id, updateWarningDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.warningsService.remove(+id);
   }
