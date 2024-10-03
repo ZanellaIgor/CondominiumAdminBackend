@@ -47,6 +47,7 @@ model Condominium {
 enum Role {
   ADMIN
   USER
+  MASTER
 }
 
 enum Situation {

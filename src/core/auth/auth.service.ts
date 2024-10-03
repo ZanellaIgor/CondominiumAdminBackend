@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/prisma.service';
-import { CryptoService } from '../crypto/crypto.service';
 
 interface UserResponse {
   id: number;
@@ -23,7 +22,6 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private cryptoService: CryptoService,
   ) {}
 
   async validateUser(
@@ -59,7 +57,7 @@ export class AuthService {
     const payload = {
       email: user.email,
       id: user.id,
-      isAdmin: user.role === 'ADMIN',
+      role: user.role,
       condominiumIds: user.condominiums?.map((condominium) => condominium.id),
       apartmentIds: user.apartments?.map((apartment) => apartment.id),
     };
