@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PersistenceModule } from './infra/persistence.module'; // Ajuste o caminho conforme necessário
 
+import { ApartamentModule } from './core/apartament/apartament.module';
 import { AuthModule } from './core/auth/auth.module';
 import { CondominiumModule } from './core/condominium/condominium.module';
 import { MaintenanceModule } from './core/maintenance/maintenance.module';
@@ -19,6 +20,7 @@ import { WarningsModule } from './core/warnings/warnings.module';
     MaintenanceModule,
     AuthModule,
     SpaceReservationModule,
+    ApartamentModule,
   ],
 })
 export class AppModule {}
