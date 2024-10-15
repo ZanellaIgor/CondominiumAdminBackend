@@ -3,6 +3,7 @@ import { PersistenceModule } from './infra/persistence.module'; // Ajuste o cami
 
 import { ApartamentModule } from './core/apartament/apartament.module';
 import { AuthModule } from './core/auth/auth.module';
+import { AuthModule2 } from './core/auth2/auth.module';
 import { CondominiumModule } from './core/condominium/condominium.module';
 import { MaintenanceModule } from './core/maintenance/maintenance.module';
 import { ReservationModule } from './core/reservation/reservation.module';
@@ -21,6 +22,7 @@ import { WarningsModule } from './core/warnings/warnings.module';
     AuthModule,
     SpaceReservationModule,
     ApartamentModule,
+    AuthModule2,
   ],
 })
 export class AppModule {}
