@@ -13,7 +13,7 @@ export class MaintenanceService {
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
-        user: { connect: { id: userId } },
+        user: { connect: { id: 2 } },
       },
     });
   }

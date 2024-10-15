@@ -1,5 +1,3 @@
-// src/auth/guards/condominium-access.guard.ts
-
 import {
   CanActivate,
   ExecutionContext,

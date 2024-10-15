@@ -24,11 +24,11 @@ export class CreateMaintenanceDto {
   @IsEnum(Category)
   category: Category;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  userId: number;
+  userId?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  condominiumId: number;
+  condominiumId?: number;
 }
