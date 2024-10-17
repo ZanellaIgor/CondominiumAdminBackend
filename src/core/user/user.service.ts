@@ -13,12 +13,13 @@ export class UserService {
   ) {}
 
   async create(data: CreateUserDto) {
-    const { apartmentIds, condominiumIds, ...rest } = data;
-    const password = await this.hashingService.hash(data.password);
+    const { apartmentIds, condominiumIds, password, ...rest } = data;
+    const passwordHash = await this.hashingService.hash(password);
 
     return this.prisma.user.create({
       data: {
         ...rest,
+        password: passwordHash,
         apartments: {
           connect: apartmentIds?.map((id) => ({ id })),
         },
@@ -67,7 +68,8 @@ export class UserService {
   }
 
   async update(id: number, data: UpdateUserDto) {
-    const { apartmentIds, condominiumIds } = data;
+    const { apartmentIds, condominiumIds, password, ...rest } = data;
+    const passwordHash = await this.hashingService.hash(password);
 
     const currentUser = await this.prisma.user.findUnique({
       where: { id: Number(id) },
@@ -101,6 +103,8 @@ export class UserService {
     const updatedUser = await this.prisma.user.update({
       where: { id: Number(id) },
       data: {
+        ...rest,
+        ...(password && { password: passwordHash }),
         apartments: {
           connect: apartmentsToConnect.map((id) => ({ id })),
           disconnect: apartmentsToDisconnect.map((id) => ({ id })),
