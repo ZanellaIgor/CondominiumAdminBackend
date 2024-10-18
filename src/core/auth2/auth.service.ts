@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
   async login(loginDto: LoginDto) {
     const passwordHash = await this.hashService.hash(loginDto.password);
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email: loginDto.email,
         password: passwordHash,
@@ -45,12 +45,22 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
-    const acessToken = await this.jwtService.signAsync({
-      email: user.email,
-      id: user.id,
-    });
-    return {
-      acessToken,
-    };
+    const acessToken = await this.jwtService.signAsync(
+      {
+        email: user.email,
+        id: user.id,
+        role: user.role,
+        condominiumIds: user.condominiums?.map((condominium) => condominium.id),
+        apartmentIds: user.apartments?.map((apartment) => apartment.id),
+      },
+      {
+        audience: this.jwtCondiguration.audience,
+        issuer: this.jwtCondiguration.issuer,
+        secret: this.jwtCondiguration.secret,
+        expiresIn: this.jwtCondiguration.jwtTtl,
+      },
+    );
+
+    return acessToken;
   }
 }
