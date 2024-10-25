@@ -36,6 +36,14 @@ export class ReservationService {
       skip: offset,
       take: limit,
       where,
+      include: {
+        space: true,
+        user: {
+          select: {
+            apartments: true,
+          },
+        },
+      },
     });
 
     const totalCount = await this.prisma.reservation.count({ where });

@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "reset": "docker volume rm condominiumadminbackend_pgdata",
-    "seed": "ts-node --require tsconfig-paths/register prisma/seeds/seeds.ts"
+    "seed": "ts-node --require tsconfig-paths/register prisma/seeds/seeds.ts",
+    "dbreset": "docker container stop condominium && docker container rm condominium && docker volume rm pgdata && docker-compose up -d"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.10",
