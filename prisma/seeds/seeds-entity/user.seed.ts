@@ -1,12 +1,15 @@
+import { BcryptService } from 'src/core/auth2/hashing/bcrypt.service';
 import { prismaSeed } from '../prisma-seeds';
 
 export async function userSeed() {
+  const hashService = new BcryptService();
+  const password = await hashService.hash('senhaLOGIN');
   try {
     await prismaSeed.user.create({
       data: {
         name: 'MASTER',
         email: 'master@example.com',
-        password: 'master',
+        password,
         role: 'MASTER',
         profilePhoto: 'link-to-photo.jpg',
         condominiums: {
@@ -19,7 +22,7 @@ export async function userSeed() {
       data: {
         name: 'ADMIN',
         email: 'admin@example.com',
-        password: 'admin',
+        password,
         role: 'ADMIN',
         profilePhoto: 'link-to-photo.jpg',
         apartments: {
@@ -35,7 +38,7 @@ export async function userSeed() {
       data: {
         name: 'User',
         email: 'user@example.com',
-        password: 'user',
+        password,
         role: 'USER',
         profilePhoto: 'link-to-photo.jpg',
         apartments: {
