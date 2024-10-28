@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { HashingServiceProtocol } from '../auth2/hashing/hashing.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,18 +16,32 @@ export class UserService {
     const { apartmentIds, condominiumIds, password, ...rest } = data;
     const passwordHash = await this.hashingService.hash(password);
 
-    return this.prisma.user.create({
+    const user = this.prisma.user.create({
       data: {
         ...rest,
         password: passwordHash,
-        apartments: {
-          connect: apartmentIds?.map((id) => ({ id })),
-        },
-        condominiums: {
-          connect: condominiumIds?.map((id) => ({ id })),
-        },
+        ...(apartmentIds &&
+          apartmentIds.length > 0 && {
+            apartments: {
+              connect: apartmentIds.map((id) => ({ id })),
+            },
+          }),
+        ...(condominiumIds &&
+          condominiumIds.length > 0 && {
+            condominiums: {
+              connect: condominiumIds.map((id) => ({ id })),
+            },
+          }),
       },
     });
+
+    if (!user) {
+      throw new HttpException(
+        'Não foi possível criar o usário',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException('Usário criado com sucesso!', HttpStatus.CREATED);
   }
 
   async findAll(query: FindAllUserDto) {
@@ -119,8 +133,13 @@ export class UserService {
         condominiums: true,
       },
     });
-
-    return updatedUser;
+    if (!updatedUser) {
+      throw new HttpException(
+        'Não foi possível atualizar o usário',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException('Usário editado com sucesso!', HttpStatus.OK);
   }
 
   async remove(id: number) {

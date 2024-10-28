@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
@@ -10,12 +10,22 @@ import { UpdateCondominiumDto } from './dto/update-condominium';
 export class CondominiumService {
   constructor(private prisma: PrismaService) {}
 
-  create(createCondominiumDto: CreateCondominiumDto) {
-    return this.prisma.condominium.create({
+  async create(createCondominiumDto: CreateCondominiumDto) {
+    const condominium = await this.prisma.condominium.create({
       data: {
         ...createCondominiumDto,
       },
     });
+    if (!condominium) {
+      throw new HttpException(
+        'Não foi possível criar o Condomínio',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException(
+      'Condomínio criado com sucesso!',
+      HttpStatus.CREATED,
+    );
   }
 
   async findAll(query: FindAllCondominiumDto) {
@@ -31,7 +41,7 @@ export class CondominiumService {
       }),
     };
 
-    const space = await this.prisma.condominium.findMany({
+    const condominium = await this.prisma.condominium.findMany({
       skip: offset,
       take: limit,
       where,
@@ -40,7 +50,7 @@ export class CondominiumService {
     const totalCount = await this.prisma.condominium.count({ where });
 
     return {
-      data: space,
+      data: condominium,
       totalCount,
       page,
       limit,
@@ -51,13 +61,20 @@ export class CondominiumService {
     return this.prisma.condominium.findUnique({ where: { id } });
   }
 
-  update(id: number, updatecondominiumDto: UpdateCondominiumDto) {
-    return this.prisma.condominium.update({
+  async update(id: number, updatecondominiumDto: UpdateCondominiumDto) {
+    const condominium = await this.prisma.condominium.update({
       where: { id },
       data: {
         ...updatecondominiumDto,
       },
     });
+    if (!condominium) {
+      throw new HttpException(
+        'Não foi possível editar o condomínio',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException('Condomínio editado com sucesso!', HttpStatus.OK);
   }
 
   remove(id: number) {

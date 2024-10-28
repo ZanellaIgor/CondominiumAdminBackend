@@ -11,7 +11,7 @@ export class ApartamentService {
   async create(data: CreateApartamentDto) {
     const { condominiumId, ...rest } = data;
 
-    const apartament = this.prisma.apartment.create({
+    const apartament = await this.prisma.apartment.create({
       data: {
         ...rest,
         condominium: {
@@ -88,8 +88,13 @@ export class ApartamentService {
       where: { id: Number(id) },
       data,
     });
-
-    return updateApartament;
+    if (!updateApartament) {
+      throw new HttpException(
+        'Não foi editar o apartamento',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException('Apartamento editado com sucesso!', HttpStatus.OK);
   }
 
   async remove(id: number) {

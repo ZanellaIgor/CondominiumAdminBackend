@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSpaceReservationDto } from './dto/create-space-reservation';
@@ -9,14 +9,25 @@ import { UpdateSpaceReservationDto } from './dto/update-space-reservation';
 export class SpaceReservationService {
   constructor(private prisma: PrismaService) {}
 
-  create(createSpaceReservationDto: CreateSpaceReservationDto) {
+  async create(createSpaceReservationDto: CreateSpaceReservationDto) {
     const { condominiumId, ...data } = createSpaceReservationDto;
-    return this.prisma.spaceReservation.create({
+    const spaceReservation = this.prisma.spaceReservation.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
       },
     });
+
+    if (!spaceReservation) {
+      throw new HttpException(
+        'Não foi possível criar o Espaço de reserva',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException(
+      'Espaço de reserva criado com sucesso!',
+      HttpStatus.CREATED,
+    );
   }
 
   async findAll(query: FindAllSpaceReservationDto) {
@@ -53,13 +64,16 @@ export class SpaceReservationService {
     };
   }
 
-  findOne(id: number) {
-    return this.prisma.spaceReservation.findUnique({ where: { id } });
+  async findOne(id: number) {
+    return await this.prisma.spaceReservation.findUnique({ where: { id } });
   }
 
-  update(id: number, updateSpaceReservationDto: UpdateSpaceReservationDto) {
+  async update(
+    id: number,
+    updateSpaceReservationDto: UpdateSpaceReservationDto,
+  ) {
     const { condominiumId, ...data } = updateSpaceReservationDto;
-    return this.prisma.spaceReservation.update({
+    const spaceReservation = await this.prisma.spaceReservation.update({
       where: { id },
       data: {
         ...data,
@@ -68,6 +82,17 @@ export class SpaceReservationService {
           : undefined,
       },
     });
+
+    if (!spaceReservation) {
+      throw new HttpException(
+        'Não foi possível editar o Espaço de reserva',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException(
+      'Espaço de reserva editado com sucesso!',
+      HttpStatus.OK,
+    );
   }
 
   remove(id: number) {
