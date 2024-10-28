@@ -3,7 +3,6 @@ import {
   IsArray,
   IsEmail,
   IsEnum,
-  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -26,9 +25,9 @@ export class CreateUserDto {
   @IsOptional()
   apartmentIds?: number[];
 
-  @IsNotEmpty()
   @IsArray()
-  condominiumIds: number[];
+  @IsOptional()
+  condominiumIds?: number[];
 
   @IsEnum(Role)
   role: Role;

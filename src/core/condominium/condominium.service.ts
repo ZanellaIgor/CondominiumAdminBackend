@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateCondominiumDto } from './dto/create-condominium';
 import { FindAllCondominiumDto } from './dto/filter-condominium';
@@ -22,7 +23,12 @@ export class CondominiumService {
     const offset = (page - 1) * limit;
 
     const where = {
-      AND: [name ? { name: { contains: name } } : {}],
+      ...(name && {
+        name: {
+          contains: name,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
     };
 
     const space = await this.prisma.condominium.findMany({

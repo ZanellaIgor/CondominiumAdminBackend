@@ -16,7 +16,7 @@ export class FindAllApartamentDto {
 
   @IsOptional()
   @IsArray()
-  condominiumIds?: string;
+  condominiumIds?: number[];
 
   @IsOptional()
   @IsString()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateApartamentDto } from './dto/create-apartament.dto';
 import { FindAllApartamentDto } from './dto/filter-apartament.dto';
@@ -11,15 +11,24 @@ export class ApartamentService {
   async create(data: CreateApartamentDto) {
     const { condominiumId, ...rest } = data;
 
-    return this.prisma.apartment.create({
+    const apartament = this.prisma.apartment.create({
       data: {
         ...rest,
-
         condominium: {
           connect: { id: condominiumId },
         },
       },
     });
+    if (!apartament) {
+      throw new HttpException(
+        'Não foi possível criar o apartamento',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw new HttpException(
+      'Apartamento criado com sucesso!',
+      HttpStatus.CREATED,
+    );
   }
 
   async findAll(query: FindAllApartamentDto) {

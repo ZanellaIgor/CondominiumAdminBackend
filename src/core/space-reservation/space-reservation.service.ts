@@ -31,6 +31,16 @@ export class SpaceReservationService {
       skip: offset,
       take: limit,
       where,
+      select: {
+        id: true,
+        name: true,
+        condominium: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     const totalCount = await this.prisma.spaceReservation.count({ where });

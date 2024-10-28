@@ -37,10 +37,21 @@ export class ReservationService {
       take: limit,
       where,
       include: {
-        space: true,
+        space: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         user: {
           select: {
             apartments: true,
+          },
+        },
+        condominium: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
