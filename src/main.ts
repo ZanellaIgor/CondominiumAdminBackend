@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
 import { AppModule } from './app.module';
 
@@ -18,6 +19,15 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('Condominium API')
+    .setDescription('API para gerenciamento de condomínios')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT);
 }

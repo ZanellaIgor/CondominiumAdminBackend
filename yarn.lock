@@ -794,16 +794,16 @@
     jsonc-parser "3.3.1"
     pluralize "8.0.0"
 
-"@nestjs/swagger@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-7.4.0.tgz#e61dbefdfc1d4011327a256896953c74e511c850"
-  integrity sha512-dCiwKkRxcR7dZs5jtrGspBAe/nqJd1AYzOBTzw9iCdbq3BGrLpwokelk6lFZPe4twpTsPQqzNKBwKzVbI6AR/g==
+"@nestjs/swagger@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-8.0.0.tgz#3ab4524d95f21e55e6e472a9067439eec3db2de1"
+  integrity sha512-CJlceQSSU2chhxoskK7tPUM8IA2mf5vMXXpsHdM21Bn5uQAD9V8gpSjgBnD7oXBryY6hIzWOgQXj7efJkIOSbg==
   dependencies:
     "@microsoft/tsdoc" "^0.15.0"
     "@nestjs/mapped-types" "2.0.5"
     js-yaml "4.1.0"
     lodash "4.17.21"
-    path-to-regexp "3.2.0"
+    path-to-regexp "3.3.0"
     swagger-ui-dist "5.17.14"
 
 "@nestjs/testing@^10.0.0":
@@ -4264,6 +4264,11 @@ path-to-regexp@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.2.0.tgz#fa7877ecbc495c601907562222453c43cc204a5f"
   integrity sha512-jczvQbCUS7XmS7o+y1aEO9OBVFeZBQ1MDSEqmO7xSoPgOPoowY/SxLpZ6Vh97/8qHZOteiCKb7gkG9gA2ZUxJA==
+
+path-to-regexp@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.3.0.tgz#f7f31d32e8518c2660862b644414b6d5c63a611b"
+  integrity sha512-qyCH421YQPS2WFDxDjftfc1ZR5WKQzVzqsp4n9M2kQhVOo/ByahFoUNJfl58kOcEGfQ//7weFTDhm+ss8Ecxgw==
 
 path-type@^4.0.0:
   version "4.0.0"

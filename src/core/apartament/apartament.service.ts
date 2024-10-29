@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateApartamentDto } from './dto/create-apartament.dto';
 import { FindAllApartamentDto } from './dto/filter-apartament.dto';
+import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartament.dto';
 import { UpdateApartamentDto } from './dto/update-apartament.dto';
 
 @Injectable()
@@ -31,7 +32,9 @@ export class ApartamentService {
     );
   }
 
-  async findAll(query: FindAllApartamentDto) {
+  async findAll(
+    query: FindAllApartamentDto,
+  ): Promise<PaginatedApartmentsResponseDto> {
     const { page = 1, limit = 10, condominiumIds, name, userId } = query;
     const offset = (page - 1) * limit;
 
