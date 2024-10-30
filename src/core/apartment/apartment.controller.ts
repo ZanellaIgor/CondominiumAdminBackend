@@ -14,29 +14,29 @@ import { Role } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../decorators/role.decorator';
 import { RolesGuard } from '../guards/role.guard';
-import { ApartamentService } from './apartament.service';
-import { CreateApartamentDto } from './dto/create-apartament.dto';
-import { FindAllApartamentDto } from './dto/filter-apartament.dto';
+import { ApartmentService } from './apartment.service';
+import { CreateApartmentDto } from './dto/create-apartment.dto';
+import { FindAllApartmentDto } from './dto/filter-apartment.dto';
 import { ApartmentResponseDto } from './dto/response-apartment.dto';
-import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartament.dto';
-import { UpdateApartamentDto } from './dto/update-apartament.dto';
+import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartment.dto';
+import { UpdateApartmentDto } from './dto/update-apartment.dto';
 
-@ApiTags('Apartments')
-@Controller('apartament')
-export class ApartamentController {
-  constructor(private readonly apartamentService: ApartamentService) {}
+@ApiTags('Apartamentos')
+@Controller('apartment')
+export class ApartmentController {
+  constructor(private readonly apartmentService: ApartmentService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Cria um novo apartamento' })
   @ApiResponse({ status: 201, description: 'Apartamento criado com sucesso.' })
   @ApiResponse({
     status: 400,
     description: 'Não foi possível criar o apartamento.',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.MASTER)
-  create(@Body() createApartamentDto: CreateApartamentDto) {
-    return this.apartamentService.create(createApartamentDto);
+  create(@Body() createApartamentDto: CreateApartmentDto) {
+    return this.apartmentService.create(createApartamentDto);
   }
 
   @Get()
@@ -48,8 +48,8 @@ export class ApartamentController {
     description: 'Lista de apartamentos retornada com sucesso.',
     type: PaginatedApartmentsResponseDto,
   })
-  findAll(@Query() query: FindAllApartamentDto) {
-    return this.apartamentService.findAll(query);
+  findAll(@Query() query: FindAllApartmentDto) {
+    return this.apartmentService.findAll(query);
   }
 
   @Get(':id')
@@ -63,7 +63,7 @@ export class ApartamentController {
   })
   @ApiResponse({ status: 404, description: 'Apartamento não encontrado.' })
   findOne(@Param('id') id: string) {
-    return this.apartamentService.findOne(+id);
+    return this.apartmentService.findOne(+id);
   }
 
   @Patch(':id')
@@ -75,8 +75,8 @@ export class ApartamentController {
     description: 'Apartamento atualizado com sucesso.',
   })
   @ApiResponse({ status: 404, description: 'Apartamento não encontrado.' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateApartamentDto) {
-    return this.apartamentService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateApartmentDto) {
+    return this.apartmentService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
@@ -89,6 +89,6 @@ export class ApartamentController {
   })
   @ApiResponse({ status: 404, description: 'Apartamento não encontrado.' })
   remove(@Param('id') id: string) {
-    return this.apartamentService.remove(+id);
+    return this.apartmentService.remove(+id);
   }
 }

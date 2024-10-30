@@ -94,8 +94,4 @@ export class SpaceReservationService {
       HttpStatus.OK,
     );
   }
-
-  remove(id: number) {
-    return this.prisma.spaceReservation.delete({ where: { id } });
-  }
 }

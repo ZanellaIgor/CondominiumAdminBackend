@@ -1,15 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
-import { CreateApartamentDto } from './dto/create-apartament.dto';
-import { FindAllApartamentDto } from './dto/filter-apartament.dto';
-import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartament.dto';
-import { UpdateApartamentDto } from './dto/update-apartament.dto';
+import { CreateApartmentDto } from './dto/create-apartment.dto';
+import { FindAllApartmentDto } from './dto/filter-apartment.dto';
+import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartment.dto';
+import { UpdateApartmentDto } from './dto/update-apartment.dto';
 
 @Injectable()
-export class ApartamentService {
+export class ApartmentService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateApartamentDto) {
+  async create(data: CreateApartmentDto) {
     const { condominiumId, ...rest } = data;
 
     const apartament = await this.prisma.apartment.create({
@@ -33,7 +33,7 @@ export class ApartamentService {
   }
 
   async findAll(
-    query: FindAllApartamentDto,
+    query: FindAllApartmentDto,
   ): Promise<PaginatedApartmentsResponseDto> {
     const { page = 1, limit = 10, condominiumIds, name, userId } = query;
     const offset = (page - 1) * limit;
@@ -86,7 +86,7 @@ export class ApartamentService {
     });
   }
 
-  async update(id: number, data: UpdateApartamentDto) {
+  async update(id: number, data: UpdateApartmentDto) {
     const updateApartament = await this.prisma.apartment.update({
       where: { id: Number(id) },
       data,

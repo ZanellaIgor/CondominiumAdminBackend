@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateCondominiumDto } from './dto/create-condominium';
 import { FindAllCondominiumDto } from './dto/filter-condominium';
+import { PaginatedCondominiumResponseDto } from './dto/response-paginated-condominium.dto';
 import { UpdateCondominiumDto } from './dto/update-condominium';
 
 @Injectable()
@@ -28,7 +29,9 @@ export class CondominiumService {
     );
   }
 
-  async findAll(query: FindAllCondominiumDto) {
+  async findAll(
+    query: FindAllCondominiumDto,
+  ): Promise<PaginatedCondominiumResponseDto> {
     const { page, limit, name } = query;
     const offset = (page - 1) * limit;
 
@@ -75,9 +78,5 @@ export class CondominiumService {
       );
     }
     throw new HttpException('Condomínio editado com sucesso!', HttpStatus.OK);
-  }
-
-  remove(id: number) {
-    return this.prisma.condominium.delete({ where: { id } });
   }
 }
