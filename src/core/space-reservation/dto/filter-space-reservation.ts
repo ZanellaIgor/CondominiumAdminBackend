@@ -19,6 +19,7 @@ export class FindAllSpaceReservationDto {
   name?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   condominiumId?: number;
 }

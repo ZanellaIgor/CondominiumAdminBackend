@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSpaceReservationDto } from './dto/create-space-reservation';
 import { FindAllSpaceReservationDto } from './dto/filter-space-reservation';
@@ -31,11 +32,12 @@ export class SpaceReservationService {
   }
 
   async findAll(query: FindAllSpaceReservationDto) {
-    const { page, limit, name } = query;
+    const { page, limit, name, condominiumId } = query;
     const offset = (page - 1) * limit;
 
-    const where = {
-      AND: [name ? { name: { contains: name } } : {}],
+    const where: Prisma.SpaceReservationWhereInput = {
+      ...(name && { name: { contains: name, mode: 'insensitive' } }),
+      ...(condominiumId && { condominiumId }),
     };
 
     const space = await this.prisma.spaceReservation.findMany({
