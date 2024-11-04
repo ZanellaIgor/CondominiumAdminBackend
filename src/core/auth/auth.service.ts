@@ -1,36 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/prisma.service';
-
-interface UserResponse {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  apartments: {
-    id: number;
-    name: string;
-  }[];
-  condominiums: {
-    id: number;
-    name: string;
-  }[];
-}
+import { LoginDto } from './dto/login.dto';
+import { HashingServiceProtocol } from './hashing/hashing.service';
+import jwtConfig from './jwt/jwt.config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
+    private readonly prisma: PrismaService,
+    private readonly hashService: HashingServiceProtocol,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtCondiguration: ConfigType<typeof jwtConfig>,
+    private readonly jwtService: JwtService,
   ) {}
-
-  async validateUser(
-    email: string,
-    password: string,
-  ): Promise<UserResponse | null> {
+  async login(loginDto: LoginDto) {
     const user = await this.prisma.user.findUnique({
-      where: { email, password },
+      where: {
+        email: loginDto.email,
+      },
       select: {
+        password: true,
         id: true,
         name: true,
         email: true,
@@ -50,20 +41,35 @@ export class AuthService {
       },
     });
 
-    return user ? user : null;
-  }
+    if (!user) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
 
-  async login(user: UserResponse) {
-    const payload = {
-      email: user.email,
-      id: user.id,
-      role: user.role,
-      condominiumIds: user.condominiums?.map((condominium) => condominium.id),
-      apartmentIds: user.apartments?.map((apartment) => apartment.id),
-    };
+    const isValidPassword = await this.hashService.compare(
+      loginDto.password,
+      user.password,
+    );
 
-    const dataJWT = { acess_token: this.jwtService.sign(payload) };
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
 
-    return dataJWT;
+    const acess_token = await this.jwtService.signAsync(
+      {
+        email: user.email,
+        id: user.id,
+        role: user.role,
+        condominiumIds: user.condominiums?.map((condominium) => condominium.id),
+        apartmentIds: user.apartments?.map((apartment) => apartment.id),
+      },
+      {
+        audience: this.jwtCondiguration.audience,
+        issuer: this.jwtCondiguration.issuer,
+        secret: this.jwtCondiguration.secret,
+        expiresIn: this.jwtCondiguration.jwtTtl,
+      },
+    );
+
+    return { acess_token };
   }
 }

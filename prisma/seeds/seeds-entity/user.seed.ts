@@ -1,4 +1,4 @@
-import { BcryptService } from 'src/core/auth2/hashing/bcrypt.service';
+import { BcryptService } from 'src/core/auth/hashing/bcrypt.service';
 import { prismaSeed } from '../prisma-seeds';
 
 export async function userSeed() {

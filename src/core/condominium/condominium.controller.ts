@@ -11,7 +11,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { CondominiumService } from './condominium.service';
 import { CreateCondominiumDto } from './dto/create-condominium';
 import { FindAllCondominiumDto } from './dto/filter-condominium';
@@ -25,7 +26,7 @@ export class CondominiumController {
   constructor(private readonly condominiumService: CondominiumService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Cria um novo condomínio' })
   @ApiResponse({ status: 201, description: 'Condomínio criado com sucesso.' })
@@ -38,7 +39,7 @@ export class CondominiumController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Lista todos os condomínios' })
   @ApiResponse({
@@ -51,7 +52,7 @@ export class CondominiumController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @ApiOperation({ summary: 'Busca um condominío por ID' })
   @ApiResponse({
     status: 200,
@@ -64,7 +65,7 @@ export class CondominiumController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,

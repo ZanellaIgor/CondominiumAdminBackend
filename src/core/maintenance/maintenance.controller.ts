@@ -11,7 +11,8 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
 import { MaintenanceService } from './maintenance.service';
@@ -21,27 +22,27 @@ export class MaintenanceController {
   constructor(private readonly maintenanceService: MaintenanceService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createReserveDto: CreateMaintenanceDto) {
     return this.maintenanceService.create(createReserveDto);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   findAll(@Query() query: FindAllMaintenanceDto) {
     return this.maintenanceService.findAll(query);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   findOne(@Param('id') id: string) {
     return this.maintenanceService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,
@@ -51,7 +52,7 @@ export class MaintenanceController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthTokenGuard)
   remove(@Param('id') id: string) {
     return this.maintenanceService.remove(+id);
   }

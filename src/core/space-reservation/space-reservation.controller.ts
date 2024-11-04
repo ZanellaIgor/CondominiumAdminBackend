@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { Roles } from '../decorators/role.decorator';
 import { RolesGuard } from '../guards/role.guard';
 import { CreateSpaceReservationDto } from './dto/create-space-reservation';
@@ -29,7 +29,7 @@ export class SpaceReservationController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Cria um espaço comum no condominío para reserva' })
@@ -43,7 +43,7 @@ export class SpaceReservationController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Lista todos os locais para reserva' })
@@ -57,14 +57,14 @@ export class SpaceReservationController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   findOne(@Param('id') id: string) {
     return this.spaceReservationService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(

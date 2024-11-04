@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
-import { HashingServiceProtocol } from '../auth2/hashing/hashing.service';
+import { HashingServiceProtocol } from '../auth/hashing/hashing.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindAllUserDto } from './dto/filter-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

@@ -11,7 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { Roles } from '../decorators/role.decorator';
 import { RolesGuard } from '../guards/role.guard';
 import { ApartmentService } from './apartment.service';
@@ -27,7 +28,7 @@ export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Cria um novo apartamento' })
   @ApiResponse({ status: 201, description: 'Apartamento criado com sucesso.' })
@@ -40,7 +41,7 @@ export class ApartmentController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Lista todos os apartamentos' })
   @ApiResponse({
@@ -53,7 +54,7 @@ export class ApartmentController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Busca um apartamento por ID' })
   @ApiResponse({
@@ -67,7 +68,7 @@ export class ApartmentController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Atualiza um apartamento existente' })
   @ApiResponse({
@@ -80,7 +81,7 @@ export class ApartmentController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Remove um apartamento por ID' })
   @ApiResponse({
