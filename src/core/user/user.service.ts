@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { HashingServiceProtocol } from '../auth2/hashing/hashing.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -45,11 +46,31 @@ export class UserService {
   }
 
   async findAll(query: FindAllUserDto) {
-    const { page = 1, limit = 10, email } = query;
+    const { page = 1, limit = 10, email, name, condominiumIds } = query;
     const offset = (page - 1) * limit;
 
-    const where = {
-      AND: [email ? { email: { contains: email } } : {}],
+    const where: Prisma.UserWhereInput = {
+      ...(name && {
+        name: {
+          contains: name,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(email && {
+        email: {
+          contains: email,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(condominiumIds && {
+        condominiums: {
+          some: {
+            id: {
+              in: condominiumIds,
+            },
+          },
+        },
+      }),
     };
 
     const users = await this.prisma.user.findMany({

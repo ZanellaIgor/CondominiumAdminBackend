@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { FindAllApartmentDto } from './dto/filter-apartment.dto';
@@ -38,7 +39,7 @@ export class ApartmentService {
     const { page = 1, limit = 10, condominiumIds, name, userId } = query;
     const offset = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.ApartmentWhereInput = {};
 
     if (condominiumIds && condominiumIds.length > 0) {
       where.condominiumId = { in: condominiumIds };

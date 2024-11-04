@@ -16,6 +16,7 @@ export class FindAllApartmentDto {
 
   @IsOptional()
   @IsArray()
+  @Type(() => Number)
   condominiumIds?: number[];
 
   @IsOptional()
@@ -23,5 +24,7 @@ export class FindAllApartmentDto {
   name?: string;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   userId?: number;
 }
