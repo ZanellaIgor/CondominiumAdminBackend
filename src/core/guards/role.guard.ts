@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from '../auth/const/auth.constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -15,7 +16,12 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const { user } = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest();
+    const user = request[REQUEST_TOKEN_PAYLOAD_KEY]; // Acessa `user` usando a chave constante
+
+    if (!user || !user.role) {
+      return false;
+    }
 
     return requiredRoles.includes(user.role);
   }
