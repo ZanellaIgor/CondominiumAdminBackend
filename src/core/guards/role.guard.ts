@@ -17,7 +17,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request[REQUEST_TOKEN_PAYLOAD_KEY]; // Acessa `user` usando a chave constante
+    const user = request[REQUEST_TOKEN_PAYLOAD_KEY];
 
     if (!user || !user.role) {
       return false;

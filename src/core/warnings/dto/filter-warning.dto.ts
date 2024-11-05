@@ -22,9 +22,14 @@ export class FindAllWarningsDto {
 
   @IsOptional()
   @IsEnum(Situation)
-  status?: Situation;
+  situation?: Situation;
 
   @IsOptional()
   @IsEnum(Category)
   category?: Category;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  condominiumId?: number[];
 }

@@ -20,14 +20,14 @@ export class WarningsService {
   }
 
   async findAll(query: FindAllWarningsDto) {
-    const { page, limit, title, status, category } = query;
+    const { page, limit, title, category, situation } = query;
     const offset = (page - 1) * limit;
 
     const where = {
       AND: [
         title ? { title: { contains: title } } : {},
-        status ? { status: status } : {},
         category ? { category: category } : {},
+        situation ? { situation: situation } : {},
       ],
     };
 
