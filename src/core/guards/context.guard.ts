@@ -22,7 +22,7 @@ export class ContextGuard implements CanActivate {
 
     if (requiredContext) {
       if (requiredContext.includes('userId') && !request.body.userId) {
-        request.body.userId = user.userId;
+        request.body.userId = Number(user.userId); // Converte explicitamente para número
       }
 
       if (requiredContext.includes('condominiumIds')) {
@@ -31,6 +31,18 @@ export class ContextGuard implements CanActivate {
         } else {
           this.validateArrayWithinContext(
             request.body.condominiumIds,
+            user.condominiumIds,
+            'Condominium',
+          );
+        }
+      }
+
+      if (requiredContext.includes('condominiumId')) {
+        if (!request.body.condominiumId) {
+          request.body.condominiumId = Number(user.condominiumIds[0]); // Converte para número
+        } else {
+          this.validateValueWithinContext(
+            Number(request.body.condominiumId),
             user.condominiumIds,
             'Condominium',
           );
@@ -62,6 +74,18 @@ export class ContextGuard implements CanActivate {
     if (!isValid) {
       throw new ForbiddenException(
         `${field} IDs are not within allowed context.`,
+      );
+    }
+  }
+
+  private validateValueWithinContext(
+    requestedValue: number,
+    contextArray: number[],
+    field: string,
+  ) {
+    if (!contextArray.includes(requestedValue)) {
+      throw new ForbiddenException(
+        `${field} ID is not within allowed context.`,
       );
     }
   }

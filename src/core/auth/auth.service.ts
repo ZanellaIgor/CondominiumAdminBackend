@@ -56,8 +56,7 @@ export class AuthService {
 
     const acess_token = await this.jwtService.signAsync(
       {
-        email: user.email,
-        id: user.id,
+        userId: user.id,
         role: user.role,
         condominiumIds: user.condominiums?.map((condominium) => condominium.id),
         apartmentIds: user.apartments?.map((apartment) => apartment.id),

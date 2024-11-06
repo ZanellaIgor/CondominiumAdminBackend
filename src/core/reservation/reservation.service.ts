@@ -25,11 +25,14 @@ export class ReservationService {
   }
 
   async findAll(query: FindAllReservationDto) {
-    const { page, limit, title } = query;
+    const { page, limit, title, situation } = query;
     const offset = (page - 1) * limit;
 
     const where = {
-      AND: [title ? { title: { contains: title } } : {}],
+      AND: [
+        title ? { title: { contains: title } } : {},
+        situation ? { situation: situation } : {},
+      ],
     };
 
     const reserve = await this.prisma.reservation.findMany({

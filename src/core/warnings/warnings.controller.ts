@@ -7,12 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  SetMetadata,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
+import { ContextGuard } from '../guards/context.guard';
 import { CreateWarningDto } from './dto/create-warning.dto';
 import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
@@ -23,7 +25,8 @@ export class WarningsController {
   constructor(private readonly warningsService: WarningsService) {}
 
   @Post()
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, ContextGuard)
+  @SetMetadata('context', ['userId', 'condominiumId'])
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createWarningDto: CreateWarningDto) {
     return this.warningsService.create(createWarningDto);
