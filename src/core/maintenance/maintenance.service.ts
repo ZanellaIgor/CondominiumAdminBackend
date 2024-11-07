@@ -13,17 +13,20 @@ export class MaintenanceService {
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
-        user: { connect: { id: 2 } },
+        user: { connect: { id: userId } },
       },
     });
   }
 
   async findAll(query: FindAllMaintenanceDto) {
-    const { page, limit, title } = query;
+    const { page, limit, title, situation } = query;
     const offset = (page - 1) * limit;
 
     const where = {
-      AND: [title ? { title: { contains: title } } : {}],
+      AND: [
+        title ? { title: { contains: title } } : {},
+        situation ? { situation: situation } : {},
+      ],
     };
 
     const maintenance = await this.prisma.maintenance.findMany({

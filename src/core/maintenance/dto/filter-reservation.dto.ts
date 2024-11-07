@@ -1,6 +1,6 @@
+import { Situation } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { SituationReservation } from 'src/utils/enum/status-reservation';
 
 export class FindAllMaintenanceDto {
   @IsOptional()
@@ -20,8 +20,8 @@ export class FindAllMaintenanceDto {
   title?: string;
 
   @IsOptional()
-  @IsEnum(SituationReservation)
-  situation?: SituationReservation;
+  @IsEnum(Situation)
+  situation: Situation;
 
   @IsOptional()
   @IsInt()
