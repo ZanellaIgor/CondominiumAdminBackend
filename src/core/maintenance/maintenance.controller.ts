@@ -32,20 +32,20 @@ export class MaintenanceController {
   }
 
   @Get()
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   findAll(@Query() query: FindAllMaintenanceDto) {
     return this.maintenanceService.findAll(query);
   }
 
   @Get(':id')
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, ContextGuard)
   findOne(@Param('id') id: string) {
     return this.maintenanceService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,

@@ -22,7 +22,7 @@ export class ContextGuard implements CanActivate {
 
     if (requiredContext) {
       if (requiredContext.includes('userId') && !request.body.userId) {
-        request.body.userId = Number(user.userId); // Converte explicitamente para número
+        request.body.userId = Number(user.userId);
       }
 
       if (requiredContext.includes('condominiumIds')) {
@@ -39,7 +39,7 @@ export class ContextGuard implements CanActivate {
 
       if (requiredContext.includes('condominiumId')) {
         if (!request.body.condominiumId) {
-          request.body.condominiumId = Number(user.condominiumIds[0]); // Converte para número
+          request.body.condominiumId = Number(user.condominiumIds[0]);
         } else {
           this.validateValueWithinContext(
             Number(request.body.condominiumId),

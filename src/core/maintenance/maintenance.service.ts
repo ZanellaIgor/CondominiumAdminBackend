@@ -33,6 +33,14 @@ export class MaintenanceService {
       skip: offset,
       take: limit,
       where,
+      include: {
+        condominium: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     const totalCount = await this.prisma.maintenance.count({ where });
