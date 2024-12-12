@@ -3,14 +3,12 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
   Post,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurveyDto } from './dto/create-survey.dto';
-import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { SurveyService } from './survey.service';
 
 @ApiTags('Enquetes')
@@ -42,9 +40,9 @@ export class SurveyController {
     return this.surveyService.findOne(+id);
   }
 
-  @Patch(':id')
+  /*   @Patch(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id') id: number, @Body() updateSurveyDto: UpdateSurveyDto) {
     return this.surveyService.update(+id, updateSurveyDto);
-  }
+  } */
 }

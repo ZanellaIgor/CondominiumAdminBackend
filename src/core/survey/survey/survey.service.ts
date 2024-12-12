@@ -1,19 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
-import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
 export class SurveyService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSurveyDto: CreateSurveyDto) {
-    const { title, description, condominiumId } = createSurveyDto;
+    const { title, description, condominiumId, questions } = createSurveyDto;
     return this.prisma.survey.create({
       data: {
         title,
         description,
         condominiumId,
+        questions: {
+          createMany: {
+            data: questions,
+          },
+        },
       },
     });
   }
@@ -49,10 +53,10 @@ export class SurveyService {
     return survey;
   }
 
-  async update(id: number, updateSurveyDto: UpdateSurveyDto) {
+  /* async update(id: number, updateSurveyDto: UpdateSurveyDto) {
     return this.prisma.survey.update({
       where: { id },
       data: updateSurveyDto,
     });
-  }
+  } */
 }

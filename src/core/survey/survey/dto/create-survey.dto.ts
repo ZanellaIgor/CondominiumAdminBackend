@@ -11,4 +11,9 @@ export class CreateSurveyDto {
 
   @IsNotEmpty()
   condominiumId: number;
+
+  @IsNotEmpty()
+  questions: {
+    text: string;
+  }[];
 }

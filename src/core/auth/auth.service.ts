@@ -58,6 +58,7 @@ export class AuthService {
       {
         userId: user.id,
         role: user.role,
+        name: user.name,
         condominiumIds: user.condominiums?.map((condominium) => condominium.id),
         apartmentIds: user.apartments?.map((apartment) => apartment.id),
       },

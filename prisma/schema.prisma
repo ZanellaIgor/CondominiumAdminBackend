@@ -126,6 +126,7 @@ model Survey {
   id            Int         @id @default(autoincrement())
   title         String      @db.VarChar(60)
   description   String?     @db.VarChar(120)
+  status        Boolean     @default(true)
   questions     Question[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
@@ -133,12 +134,29 @@ model Survey {
   condominium   Condominium @relation(fields: [condominiumId], references: [id])
 }
 
+enum QuestionType {
+  TEXT
+  OPTIONAL
+  MULTIPLE
+  BOOLEAN
+}
+
+model QuestionOption {
+  id         Int      @id @default(autoincrement())
+  text       String   @db.VarChar(120)
+  isBoolean  Boolean  @default(false)
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
 model Question {
-  id       Int      @id @default(autoincrement())
-  text     String   @db.VarChar(120)
-  surveyId Int
-  survey   Survey   @relation(fields: [surveyId], references: [id])
-  answers  Answer[]
+  id             Int              @id @default(autoincrement())
+  text           String           @db.VarChar(120)
+  type           QuestionType
+  surveyId       Int
+  survey         Survey           @relation(fields: [surveyId], references: [id])
+  answers        Answer[]
+  options QuestionOption[]
 }
 
 model Answer {
@@ -152,12 +170,21 @@ model Answer {
 model UserAnswer {
   id            Int          @id @default(autoincrement())
   userId        Int
-  answerId      Int
   user          User         @relation(fields: [userId], references: [id])
-  answer        Answer       @relation(fields: [answerId], references: [id])
+  
+  answerId      Int?       
+  answer        Answer?      @relation(fields: [answerId], references: [id])
+  
+  optionId      Int?       
+  option        QuestionOption? @relation(fields: [optionId], references: [id])
+  
+  text          String?     
+  
+  apartmentId   Int?         // Opcional, relacionado a apartamentos
+  apartment     Apartment?   @relation(fields: [apartmentId], references: [id])
+  
+  condominiumId Int?       
+  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  
   status        Boolean      @default(true)
-  Apartment     Apartment?   @relation(fields: [apartmentId], references: [id])
-  apartmentId   Int?
-  Condominium   Condominium? @relation(fields: [condominiumId], references: [id])
-  condominiumId Int?
 }
