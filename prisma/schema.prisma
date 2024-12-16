@@ -32,16 +32,17 @@ model Apartment {
 }
 
 model Condominium {
-  id                Int                @id @default(autoincrement())
-  name              String             @db.VarChar(60)
-  apartments        Apartment[]
-  warnings          Warning[]
-  reservations      Reservation[]
-  maintenances      Maintenance[]
-  surveys           Survey[]
-  userAnswers       UserAnswer[]
-  spaceReservations SpaceReservation[]
-  users             User[]             @relation("UserCondominiums")
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(60)
+  apartments          Apartment[]
+  warnings            Warning[]
+  reservations        Reservation[]
+  maintenances        Maintenance[]
+  surveys             Survey[]
+  userAnswers         UserAnswer[]
+  spaceReservations   SpaceReservation[]
+  users               User[]                @relation("UserCondominiums")
+  CondominiumOnSurvey CondominiumOnSurvey[]
 }
 
 enum Role {
@@ -123,14 +124,25 @@ model Maintenance {
 }
 
 model Survey {
-  id            Int         @id @default(autoincrement())
-  title         String      @db.VarChar(60)
-  description   String?     @db.VarChar(120)
-  status        Boolean     @default(true)
+  id            Int                   @id @default(autoincrement())
+  title         String                @db.VarChar(60)
+  description   String?               @db.VarChar(120)
+  status        Boolean               @default(true)
   questions     Question[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
   condominiumId Int
+  condominium   Condominium           @relation(fields: [condominiumId], references: [id])
+  validFrom     DateTime
+  validTo       DateTime?
+  condominiums  CondominiumOnSurvey[] // Relação com condomínios
+}
+
+model CondominiumOnSurvey {
+  id            Int         @id @default(autoincrement())
+  surveyId      Int
+  condominiumId Int
+  survey        Survey      @relation(fields: [surveyId], references: [id])
   condominium   Condominium @relation(fields: [condominiumId], references: [id])
 }
 
@@ -142,21 +154,22 @@ enum QuestionType {
 }
 
 model QuestionOption {
-  id         Int      @id @default(autoincrement())
-  text       String   @db.VarChar(120)
-  isBoolean  Boolean  @default(false)
+  id         Int          @id @default(autoincrement())
+  text       String       @db.VarChar(120)
+  isBoolean  Boolean      @default(false)
   questionId Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question     @relation(fields: [questionId], references: [id])
+  UserAnswer UserAnswer[]
 }
 
 model Question {
-  id             Int              @id @default(autoincrement())
-  text           String           @db.VarChar(120)
-  type           QuestionType
-  surveyId       Int
-  survey         Survey           @relation(fields: [surveyId], references: [id])
-  answers        Answer[]
-  options QuestionOption[]
+  id       Int              @id @default(autoincrement())
+  text     String           @db.VarChar(120)
+  type     QuestionType
+  surveyId Int
+  survey   Survey           @relation(fields: [surveyId], references: [id])
+  answers  Answer[]
+  options  QuestionOption[]
 }
 
 model Answer {
@@ -168,23 +181,23 @@ model Answer {
 }
 
 model UserAnswer {
-  id            Int          @id @default(autoincrement())
-  userId        Int
-  user          User         @relation(fields: [userId], references: [id])
-  
-  answerId      Int?       
-  answer        Answer?      @relation(fields: [answerId], references: [id])
-  
-  optionId      Int?       
-  option        QuestionOption? @relation(fields: [optionId], references: [id])
-  
-  text          String?     
-  
-  apartmentId   Int?         // Opcional, relacionado a apartamentos
-  apartment     Apartment?   @relation(fields: [apartmentId], references: [id])
-  
-  condominiumId Int?       
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  answerId Int?
+  answer   Answer? @relation(fields: [answerId], references: [id])
+
+  optionId Int?
+  option   QuestionOption? @relation(fields: [optionId], references: [id])
+
+  text String?
+
+  apartmentId Int?
+  apartment   Apartment? @relation(fields: [apartmentId], references: [id])
+
+  condominiumId Int?
   condominium   Condominium? @relation(fields: [condominiumId], references: [id])
-  
-  status        Boolean      @default(true)
+
+  status Boolean @default(true)
 }
