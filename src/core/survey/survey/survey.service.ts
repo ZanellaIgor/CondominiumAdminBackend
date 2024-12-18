@@ -1,62 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+
 import { PrismaService } from 'src/infra/prisma.service';
+import { QuestionService } from '../question/question.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 
 @Injectable()
 export class SurveyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private questionService: QuestionService,
+  ) {}
 
-  async create(createSurveyDto: CreateSurveyDto) {
-    const { title, description, condominiumId, questions } = createSurveyDto;
-    return this.prisma.survey.create({
-      data: {
-        title,
-        description,
-        condominiumId,
-        questions: {
-          createMany: {
-            data: questions,
-          },
-        },
-      },
-    });
-  }
+  async createSurvey(data: CreateSurveyDto) {
+    const { questions, ...surveyData } = data;
 
-  async findAll() {
-    return this.prisma.survey.findMany({
-      include: {
-        questions: {
-          include: {
-            answers: true,
-          },
-        },
-      },
-    });
-  }
+    const survey = await this.prisma.survey.create({ data: surveyData });
 
-  async findOne(id: number) {
-    const survey = await this.prisma.survey.findUnique({
-      where: { id },
-      include: {
-        questions: {
-          include: {
-            answers: true,
-          },
-        },
-      },
-    });
-
-    if (!survey) {
-      throw new NotFoundException(`Survey with ID ${id} not found`);
+    if (questions) {
+      await this.questionService.createQuestions(survey.id, questions);
     }
 
-    return survey;
+    return this.getSurveyById(survey.id);
   }
 
-  /* async update(id: number, updateSurveyDto: UpdateSurveyDto) {
-    return this.prisma.survey.update({
+  async getSurveyById(id: number) {
+    return this.prisma.survey.findUnique({
       where: { id },
-      data: updateSurveyDto,
+      include: { questions: { include: { options: true } } },
     });
-  } */
+  }
+
+  async getAllSurveys() {
+    return this.prisma.survey.findMany({
+      include: { questions: { include: { options: true } } },
+    });
+  }
 }

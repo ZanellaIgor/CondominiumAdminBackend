@@ -1,19 +1,38 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateQuestionDto } from '../../question/dto/create-question.dto';
 
 export class CreateSurveyDto {
   @IsString()
-  @IsNotEmpty()
   title: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   description?: string;
 
-  @IsNotEmpty()
+  @IsBoolean()
+  status: boolean;
+
+  @IsInt()
   condominiumId: number;
 
-  @IsNotEmpty()
-  questions: {
-    text: string;
-  }[];
+  @IsDate()
+  validFrom: Date;
+
+  @IsOptional()
+  @IsDate()
+  validTo?: Date;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateQuestionDto)
+  questions: CreateQuestionDto[];
 }
