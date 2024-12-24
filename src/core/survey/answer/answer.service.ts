@@ -1,62 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateAnswerDto } from './dto/create-answer.dto';
-import { UpdateAnswerDto } from './dto/update-answer.dto';
 
 @Injectable()
 export class AnswerService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createAnswerDto: CreateAnswerDto) {
+  async createAnswer(createAnswerDto: CreateAnswerDto) {
+    const { userId, questionId, text, optionId } = createAnswerDto;
+
+    const existingAnswer = await this.prisma.answer.findUnique({
+      where: { userId_questionId: { userId, questionId } },
+    });
+
+    if (existingAnswer) {
+      throw new Error('User has already answered this question.');
+    }
+
     return this.prisma.answer.create({
-      data: createAnswerDto,
+      data: { userId, questionId, text, optionId },
     });
   }
 
-  async findAll() {
+  async findAnswersByUser(userId: number) {
     return this.prisma.answer.findMany({
-      include: {
-        question: true,
-      },
+      where: { userId },
+      include: { question: true },
     });
-  }
-
-  async findOne(id: number) {
-    const answer = await this.prisma.answer.findUnique({
-      where: { id },
-      include: {
-        question: true,
-      },
-    });
-
-    if (!answer) {
-      throw new NotFoundException(`Resposta não encontrada.`);
-    }
-
-    return answer;
-  }
-
-  async update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    const answer = await this.prisma.answer.findUnique({ where: { id } });
-
-    if (!answer) {
-      throw new NotFoundException(`Answer with ID ${id} not found`);
-    }
-
-    return this.prisma.answer.update({
-      where: { id },
-      data: updateAnswerDto,
-    });
-  }
-
-  async remove(id: number) {
-    const answer = await this.prisma.answer.findUnique({ where: { id } });
-
-    if (!answer) {
-      throw new NotFoundException(`Resposta não encontrada.`);
-    }
-
-    return this.prisma.answer.delete({ where: { id } });
   }
 }

@@ -1,10 +1,17 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateAnswerDto {
-  @IsString()
-  @IsNotEmpty()
-  text: string;
+  @IsInt()
+  userId: number;
 
-  @IsNotEmpty()
+  @IsInt()
   questionId: number;
+
+  @IsOptional()
+  @IsString()
+  text?: string;
+
+  @IsOptional()
+  @IsInt()
+  optionId?: number;
 }

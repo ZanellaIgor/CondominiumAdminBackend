@@ -1,23 +1,45 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateSurveyDto } from './dto/create-survey.dto';
+import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { SurveyService } from './survey.service';
 
 @Controller('surveys')
 export class SurveyController {
-  constructor(private surveyService: SurveyService) {}
+  constructor(private readonly surveyService: SurveyService) {}
 
   @Post()
-  async create(@Body() createSurveyDto: CreateSurveyDto) {
-    return this.surveyService.createSurvey(createSurveyDto);
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.surveyService.getSurveyById(Number(id));
+  async createSurvey(@Body() createSurveyDto: CreateSurveyDto) {
+    return await this.surveyService.createSurvey(createSurveyDto);
   }
 
   @Get()
-  async findAll() {
-    return this.surveyService.getAllSurveys();
+  async findAllSurveys() {
+    return await this.surveyService.findAllSurveys();
+  }
+
+  @Get(':id')
+  async findSurveyById(@Param('id') id: string) {
+    return await this.surveyService.findSurveyById(+id);
+  }
+
+  @Put(':id')
+  async updateSurvey(
+    @Param('id') id: string,
+    @Body() updateSurveyDto: UpdateSurveyDto,
+  ) {
+    return await this.surveyService.updateSurvey(+id, updateSurveyDto);
+  }
+
+  @Delete(':id')
+  async deleteSurvey(@Param('id') id: string) {
+    return await this.surveyService.deleteSurvey(+id);
   }
 }
