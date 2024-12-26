@@ -9,7 +9,6 @@ import { MaintenanceModule } from './core/maintenance/maintenance.module';
 import { ReservationModule } from './core/reservation/reservation.module';
 import { SpaceReservationModule } from './core/space-reservation/space-reservation.module';
 import { AnswerModule } from './core/survey/answer/answer.module';
-import { QuestionModule } from './core/survey/question/question.module';
 
 import { SurveyModule } from './core/survey/survey/survey.module';
 import { UserModule } from './core/user/user.module';
@@ -26,7 +25,6 @@ import { WarningsModule } from './core/warnings/warnings.module';
     AuthModule,
     SpaceReservationModule,
     SurveyModule,
-    QuestionModule,
     AnswerModule,
     ApartmentModule,
   ],

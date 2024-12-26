@@ -11,7 +11,7 @@ import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { SurveyService } from './survey.service';
 
-@Controller('surveys')
+@Controller('survey')
 export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 

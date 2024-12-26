@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
@@ -10,11 +9,20 @@ export class SurveyService {
 
   async createSurvey(createSurveyDto: CreateSurveyDto) {
     const { questions, ...surveyData } = createSurveyDto;
+
+    const transformedQuestions = questions.map((question) => ({
+      text: question.text,
+      type: question.type,
+      options: question.options
+        ? { create: question.options.map((option) => ({ text: option.text })) }
+        : undefined,
+    }));
+
     return this.prisma.survey.create({
       data: {
         ...surveyData,
         questions: {
-          create: questions,
+          create: transformedQuestions,
         },
       },
     });
@@ -22,14 +30,14 @@ export class SurveyService {
 
   async findAllSurveys() {
     return this.prisma.survey.findMany({
-      include: { questions: true },
+      include: { questions: { include: { options: true } } },
     });
   }
 
   async findSurveyById(id: number) {
     const survey = await this.prisma.survey.findUnique({
       where: { id },
-      include: { questions: true },
+      include: { questions: { include: { options: true } } },
     });
     if (!survey) throw new NotFoundException('Survey not found');
     return survey;
@@ -37,13 +45,23 @@ export class SurveyService {
 
   async updateSurvey(id: number, updateSurveyDto: UpdateSurveyDto) {
     const { questions, ...surveyData } = updateSurveyDto;
+
+    // Transformar `questions` para o formato esperado pelo Prisma
+    const transformedQuestions = questions.map((question) => ({
+      text: question.text,
+      type: question.type,
+      options: question.options
+        ? { create: question.options.map((option) => ({ text: option.text })) }
+        : undefined,
+    }));
+
     return this.prisma.survey.update({
       where: { id },
       data: {
         ...surveyData,
         questions: {
           deleteMany: {},
-          create: questions,
+          create: transformedQuestions,
         },
       },
     });

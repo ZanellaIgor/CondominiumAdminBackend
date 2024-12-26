@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
+  IsInt,
   IsOptional,
   IsString,
   ValidateNested,
@@ -25,6 +26,9 @@ export class CreateSurveyDto {
   @IsDate()
   @IsOptional()
   validTo?: Date;
+
+  @IsInt()
+  condominiumId: number;
 
   @ValidateNested({ each: true })
   @Type(() => CreateQuestionDto)

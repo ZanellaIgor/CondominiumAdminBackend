@@ -2,6 +2,11 @@ import { QuestionType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
 
+export class CreateQuestionOptionDto {
+  @IsString()
+  text: string;
+}
+
 export class CreateQuestionDto {
   @IsString()
   text: string;
@@ -13,9 +18,4 @@ export class CreateQuestionDto {
   @Type(() => CreateQuestionOptionDto)
   @IsOptional()
   options?: CreateQuestionOptionDto[];
-}
-
-export class CreateQuestionOptionDto {
-  @IsString()
-  text: string;
 }

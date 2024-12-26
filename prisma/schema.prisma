@@ -139,7 +139,7 @@ model Survey {
   condominium         Condominium           @relation(fields: [condominiumId], references: [id])
   validFrom           DateTime
   validTo             DateTime?
-  condominiums        CondominiumOnSurvey[] // Relação com condomínios
+  condominiums        CondominiumOnSurvey[] 
   SurveyParticipation SurveyParticipation[]
 }
 
