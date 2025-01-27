@@ -29,9 +29,7 @@ export class SurveyService {
   }
 
   async findAllSurveys() {
-    return this.prisma.survey.findMany({
-      include: { questions: { include: { options: true } } },
-    });
+    return this.prisma.survey.findMany();
   }
 
   async findSurveyById(id: number) {
