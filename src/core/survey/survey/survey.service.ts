@@ -44,25 +44,52 @@ export class SurveyService {
   async updateSurvey(id: number, updateSurveyDto: UpdateSurveyDto) {
     const { questions, ...surveyData } = updateSurveyDto;
 
-    // Transformar `questions` para o formato esperado pelo Prisma
-    const transformedQuestions = questions.map((question) => ({
-      text: question.text,
-      type: question.type,
-      options: question.options
-        ? { create: question.options.map((option) => ({ text: option.text })) }
-        : undefined,
-    }));
-
-    return this.prisma.survey.update({
+    // Atualiza o survey
+    const updatedSurvey = await this.prisma.survey.update({
       where: { id },
       data: {
         ...surveyData,
         questions: {
-          deleteMany: {},
-          create: transformedQuestions,
+          // Atualiza ou cria as questions
+          upsert: questions.map((question) => ({
+            where: { id: question.id || -1 }, // Usa um ID inválido se não existir
+            update: {
+              text: question.text,
+              type: question.type,
+              // Atualiza ou cria as options
+              options: {
+                upsert:
+                  question.options?.map((option) => ({
+                    where: { id: option.id || -1 }, // Usa um ID inválido se não existir
+                    update: { text: option.text },
+                    create: { text: option.text },
+                  })) || [],
+              },
+            },
+            create: {
+              text: question.text,
+              type: question.type,
+              // Cria as options se necessário
+              options: {
+                create:
+                  question.options?.map((option) => ({
+                    text: option.text,
+                  })) || [],
+              },
+            },
+          })),
+        },
+      },
+      include: {
+        questions: {
+          include: {
+            options: true,
+          },
         },
       },
     });
+
+    return updatedSurvey;
   }
 
   async deleteSurvey(id: number) {

@@ -20,9 +20,11 @@ export class CreateSurveyDto {
   @IsBoolean()
   status: boolean;
 
+  @Type(() => Date)
   @IsDate()
   validFrom: Date;
 
+  @Type(() => Date)
   @IsDate()
   @IsOptional()
   validTo?: Date;

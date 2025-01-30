@@ -1,4 +1,33 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateQuestionDto } from './create-question.dto';
+import { QuestionType } from '@prisma/client';
+import { Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
-export class UpdateSurveyDto extends PartialType(CreateQuestionDto) {}
+export class UptateQuestionOptionDto {
+  @IsInt()
+  id?: number;
+
+  @IsString()
+  text: string;
+}
+
+export class UptateQuestionDto {
+  @IsInt()
+  id?: number;
+
+  @IsString()
+  text: string;
+
+  @IsEnum(QuestionType)
+  type: QuestionType;
+
+  @ValidateNested({ each: true })
+  @Type(() => UptateQuestionOptionDto)
+  @IsOptional()
+  options?: UptateQuestionOptionDto[];
+}

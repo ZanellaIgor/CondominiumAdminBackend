@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
@@ -30,7 +30,7 @@ export class SurveyController {
     return await this.surveyService.findSurveyById(+id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateSurvey(
     @Param('id') id: string,
     @Body() updateSurveyDto: UpdateSurveyDto,
