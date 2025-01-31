@@ -10,6 +10,7 @@ import {
 
 export class UptateQuestionOptionDto {
   @IsInt()
+  @IsOptional()
   id?: number;
 
   @IsString()
@@ -18,6 +19,7 @@ export class UptateQuestionOptionDto {
 
 export class UptateQuestionDto {
   @IsInt()
+  @IsOptional()
   id?: number;
 
   @IsString()

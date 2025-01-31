@@ -44,52 +44,94 @@ export class SurveyService {
   async updateSurvey(id: number, updateSurveyDto: UpdateSurveyDto) {
     const { questions, ...surveyData } = updateSurveyDto;
 
-    // Atualiza o survey
-    const updatedSurvey = await this.prisma.survey.update({
-      where: { id },
-      data: {
-        ...surveyData,
-        questions: {
-          // Atualiza ou cria as questions
-          upsert: questions.map((question) => ({
-            where: { id: question.id || -1 }, // Usa um ID inválido se não existir
-            update: {
-              text: question.text,
-              type: question.type,
-              // Atualiza ou cria as options
-              options: {
-                upsert:
-                  question.options?.map((option) => ({
-                    where: { id: option.id || -1 }, // Usa um ID inválido se não existir
-                    update: { text: option.text },
-                    create: { text: option.text },
-                  })) || [],
+    return this.prisma.$transaction(async (prisma) => {
+      const existingSurvey = await prisma.survey.findUnique({
+        where: { id },
+        include: { questions: { include: { options: true } } },
+      });
+
+      if (!existingSurvey) {
+        throw new Error('Pesquisa não encontrada');
+      }
+
+      const existingQuestionIds = existingSurvey.questions.map((q) => q.id);
+      const existingOptionIds = existingSurvey.questions.flatMap((q) =>
+        q.options.map((o) => o.id),
+      );
+
+      const incomingQuestionIds = questions
+        .map((q) => q.id)
+        .filter((id) => id !== undefined);
+      const incomingOptionIds = questions.flatMap(
+        (q) =>
+          q.options?.map((o) => o.id).filter((id) => id !== undefined) || [],
+      );
+
+      const questionsToDelete = existingQuestionIds.filter(
+        (id) => !incomingQuestionIds.includes(id),
+      );
+      const optionsToDelete = existingOptionIds.filter(
+        (id) => !incomingOptionIds.includes(id),
+      );
+
+      await prisma.question.deleteMany({
+        where: { id: { in: questionsToDelete } },
+      });
+      await prisma.questionOption.deleteMany({
+        where: { id: { in: optionsToDelete } },
+      });
+
+      const updatedSurvey = await prisma.survey.update({
+        where: { id },
+        data: {
+          ...surveyData,
+          questions: {
+            upsert: questions.map((question) => ({
+              where: { id: question.id || -1 },
+              update: {
+                text: question.text,
+                type: question.type,
+
+                options:
+                  question.type === 'TEXT'
+                    ? undefined
+                    : {
+                        upsert:
+                          question.options?.map((option) => ({
+                            where: { id: option.id || -1 },
+                            update: { text: option.text },
+                            create: { text: option.text },
+                          })) || [],
+                      },
               },
-            },
-            create: {
-              text: question.text,
-              type: question.type,
-              // Cria as options se necessário
-              options: {
-                create:
-                  question.options?.map((option) => ({
-                    text: option.text,
-                  })) || [],
+              create: {
+                text: question.text,
+                type: question.type,
+
+                options:
+                  question.type === 'TEXT'
+                    ? undefined
+                    : {
+                        create:
+                          question.options?.map((option) => ({
+                            text: option.text,
+                          })) || [],
+                      },
               },
-            },
-          })),
-        },
-      },
-      include: {
-        questions: {
-          include: {
-            options: true,
+            })),
           },
         },
-      },
-    });
+        include: {
+          questions: {
+            include: {
+              options: true,
+            },
+          },
+        },
+      });
 
-    return updatedSurvey;
+      return updatedSurvey;
+    });
   }
 
   async deleteSurvey(id: number) {
