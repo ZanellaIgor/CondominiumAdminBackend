@@ -11,7 +11,7 @@ export class AnswerController {
     @Request() req,
     @Body() createAnswersDto: CreateAnswersDto,
   ) {
-    const userId = req.user.id;
+    const userId = 1;
     return await this.answerService.createAnswers(userId, createAnswersDto);
   }
 

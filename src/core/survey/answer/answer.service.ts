@@ -10,7 +10,6 @@ export class AnswerService {
   async createAnswers(userId: number, createAnswersDto: CreateAnswersDto) {
     const { surveyId, answers } = createAnswersDto;
 
-    // Verifica se o usuário já respondeu a algumas perguntas do questionário
     const questionIds = answers.map((a) => a.questionId);
     const existingAnswers = await this.prisma.answer.findMany({
       where: {
@@ -25,7 +24,6 @@ export class AnswerService {
       );
     }
 
-    // Preparando os dados para inserção em batch
     const answerData = answers.map(({ questionId, text, optionId }) => ({
       userId,
       questionId,
@@ -33,9 +31,26 @@ export class AnswerService {
       optionId,
     }));
 
-    return this.prisma.answer.createMany({
+    await this.prisma.answer.createMany({
       data: answerData,
       skipDuplicates: true,
+    });
+
+    await this.prisma.surveyParticipation.upsert({
+      where: {
+        surveyId_userId: {
+          surveyId,
+          userId,
+        },
+      },
+      update: {
+        hasResponded: true,
+      },
+      create: {
+        surveyId,
+        userId,
+        hasResponded: true,
+      },
     });
   }
 

@@ -6,8 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateSurveyDto } from './dto/create-survey.dto';
+import { FindAllSurveyDto } from './dto/filter-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { SurveyService } from './survey.service';
 
@@ -21,8 +23,8 @@ export class SurveyController {
   }
 
   @Get()
-  async findAllSurveys() {
-    return await this.surveyService.findAllSurveys();
+  async findAllSurveys(@Query() query: FindAllSurveyDto) {
+    return await this.surveyService.findAllSurveys(query);
   }
 
   @Get(':id')

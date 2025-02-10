@@ -139,8 +139,9 @@ model Survey {
   condominium         Condominium           @relation(fields: [condominiumId], references: [id])
   validFrom           DateTime
   validTo             DateTime?
-  condominiums        CondominiumOnSurvey[] 
+  condominiums        CondominiumOnSurvey[]
   SurveyParticipation SurveyParticipation[]
+  Answer              Answer[]
 }
 
 model CondominiumOnSurvey {
@@ -177,21 +178,28 @@ model Question {
 }
 
 model Answer {
-  id            Int             @id @default(autoincrement())
-  userId        Int
-  user          User            @relation(fields: [userId], references: [id])
-  questionId    Int
-  question      Question        @relation(fields: [questionId], references: [id])
-  optionId      Int?
-  option        QuestionOption? @relation(fields: [optionId], references: [id])
-  text          String?         @db.VarChar(120)
-  apartmentId   Int?
-  apartment     Apartment?      @relation(fields: [apartmentId], references: [id])
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+
+  optionId Int?
+  option   QuestionOption? @relation(fields: [optionId], references: [id])
+  text     String?         @db.VarChar(120)
+
+  surveyId Int
+  survey   Survey @relation(fields: [surveyId], references: [id])
+
+  apartmentId Int?
+  apartment   Apartment? @relation(fields: [apartmentId], references: [id])
+
   condominiumId Int?
-  condominium   Condominium?    @relation(fields: [condominiumId], references: [id])
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  status        Boolean         @default(true)
+  condominium   Condominium? @relation(fields: [condominiumId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  status        Boolean      @default(true)
 
   @@unique([userId, questionId])
 }

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
+import { FindAllSurveyDto } from './dto/filter-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 
 @Injectable()
@@ -28,8 +29,17 @@ export class SurveyService {
     });
   }
 
-  async findAllSurveys() {
-    return this.prisma.survey.findMany();
+  async findAllSurveys(query: FindAllSurveyDto) {
+    const { condominiumId, limit, page } = query;
+
+    return this.prisma.survey.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where: {
+        condominiumId,
+      },
+      include: { SurveyParticipation: true },
+    });
   }
 
   async findSurveyById(id: number) {
