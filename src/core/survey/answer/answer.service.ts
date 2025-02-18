@@ -29,6 +29,7 @@ export class AnswerService {
       questionId,
       text,
       optionId,
+      surveyId,
     }));
 
     await this.prisma.answer.createMany({

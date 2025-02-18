@@ -19,8 +19,9 @@ export class CreateWarningDto {
   @MaxLength(120)
   description?: string;
 
+  @IsOptional()
   @IsEnum(Situation)
-  situation: Situation;
+  situation: Situation = Situation.ABERTO;
 
   @IsEnum(Category)
   category: Category;

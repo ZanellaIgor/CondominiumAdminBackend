@@ -13,8 +13,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
+import { Role } from '@prisma/client';
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
+import { Roles } from '../decorators/role.decorator';
 import { ContextGuard } from '../guards/context.guard';
+import { RolesGuard } from '../guards/role.guard';
 import { CreateWarningDto } from './dto/create-warning.dto';
 import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
@@ -46,14 +49,16 @@ export class WarningsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(@Param('id') id: string, @Body() updateWarningDto: UpdateWarningDto) {
     return this.warningsService.update(+id, updateWarningDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MASTER)
   remove(@Param('id') id: string) {
     return this.warningsService.remove(+id);
   }
