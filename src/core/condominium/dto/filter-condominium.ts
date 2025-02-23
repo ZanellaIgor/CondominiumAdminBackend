@@ -19,6 +19,12 @@ export class FindAllCondominiumDto {
   name?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   condominiumId?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  userId?: number;
 }
