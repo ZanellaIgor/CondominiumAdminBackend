@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from '../auth/const/auth.constants';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from '../../auth/const/auth.constants';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

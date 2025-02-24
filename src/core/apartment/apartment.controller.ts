@@ -13,8 +13,9 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
-import { Roles } from '../decorators/role.decorator';
-import { RolesGuard } from '../guards/role.guard';
+import { Roles } from '../common/decorators/role.decorator';
+
+import { RolesGuard } from '../common/guards/role.guard';
 import { ApartmentService } from './apartment.service';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { FindAllApartmentDto } from './dto/filter-apartment.dto';

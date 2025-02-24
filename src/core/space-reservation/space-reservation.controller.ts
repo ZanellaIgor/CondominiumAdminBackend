@@ -13,8 +13,9 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
-import { Roles } from '../decorators/role.decorator';
-import { RolesGuard } from '../guards/role.guard';
+import { Roles } from '../common/decorators/role.decorator';
+
+import { RolesGuard } from '../common/guards/role.guard';
 import { CreateSpaceReservationDto } from './dto/create-space-reservation';
 import { FindAllSpaceReservationDto } from './dto/filter-space-reservation';
 import { PaginatedSpaceReservationResponseDto } from './dto/response-paginated-space-reservationdto';

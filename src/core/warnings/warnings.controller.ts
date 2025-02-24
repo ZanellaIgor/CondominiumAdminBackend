@@ -7,17 +7,20 @@ import {
   Patch,
   Post,
   Query,
-  SetMetadata,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
 import { Role } from '@prisma/client';
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
-import { Roles } from '../decorators/role.decorator';
-import { ContextGuard } from '../guards/context.guard';
-import { RolesGuard } from '../guards/role.guard';
+import { Roles } from '../common/decorators/role.decorator';
+
+import { InjectContext } from '../common/decorators/context.decorator';
+import { ContextGuard } from '../common/guards/context.guard';
+import { RolesGuard } from '../common/guards/role.guard';
+import { ContextInterceptor } from '../common/interceptor/context.interceptor';
 import { CreateWarningDto } from './dto/create-warning.dto';
 import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
@@ -28,9 +31,9 @@ export class WarningsController {
   constructor(private readonly warningsService: WarningsService) {}
 
   @Post()
+  @UseInterceptors(ContextInterceptor)
+  @InjectContext('userId', 'condominiumId')
   @UseGuards(AuthTokenGuard, ContextGuard)
-  @SetMetadata('context', ['userId', 'condominiumId'])
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createWarningDto: CreateWarningDto) {
     return this.warningsService.create(createWarningDto);
   }

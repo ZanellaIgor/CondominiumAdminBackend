@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
-import { ContextGuard } from '../guards/context.guard';
+import { ContextGuard } from '../common/guards/context.guard';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
 import { MaintenanceService } from './maintenance.service';

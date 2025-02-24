@@ -1,0 +1,60 @@
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/core/auth/const/auth.constants';
+
+@Injectable()
+export class ContextGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const user = request[REQUEST_TOKEN_PAYLOAD_KEY];
+
+    if (!user) return false;
+
+    this.validateInContext(request.body.userId, user.userId, 'User');
+    this.validateInContext(
+      request.body.condominiumId,
+      user.condominiumIds,
+      'Condominium',
+    );
+    this.validateArrayInContext(
+      request.body.condominiumIds,
+      user.condominiumIds,
+      'Condominium',
+    );
+    this.validateArrayInContext(
+      request.body.apartmentIds,
+      user.apartmentIds,
+      'Apartment',
+    );
+
+    return true;
+  }
+
+  private validateInContext(
+    value: number,
+    allowedValues: number[],
+    field: string,
+  ) {
+    if (value && !allowedValues.includes(value)) {
+      throw new ForbiddenException(
+        `${field} ID is not within allowed context.`,
+      );
+    }
+  }
+
+  private validateArrayInContext(
+    values: number[],
+    allowedValues: number[],
+    field: string,
+  ) {
+    if (values && !values.every((id) => allowedValues.includes(id))) {
+      throw new ForbiddenException(
+        `${field} IDs are not within allowed context.`,
+      );
+    }
+  }
+}

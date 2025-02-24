@@ -12,8 +12,9 @@ import {
 import { Role } from '@prisma/client';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
-import { Roles } from '../decorators/role.decorator';
-import { RolesGuard } from '../guards/role.guard';
+import { Roles } from '../common/decorators/role.decorator';
+
+import { RolesGuard } from '../common/guards/role.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindAllUserDto } from './dto/filter-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

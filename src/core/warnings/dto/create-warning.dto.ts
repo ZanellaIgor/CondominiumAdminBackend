@@ -1,7 +1,7 @@
 import { Category, Situation } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
-  IsInt,
   IsOptional,
   IsString,
   MaxLength,
@@ -26,9 +26,11 @@ export class CreateWarningDto {
   @IsEnum(Category)
   category: Category;
 
-  @IsInt()
-  userId: number;
+  @IsOptional()
+  @Type(() => Number)
+  userId?: number;
 
-  @IsInt()
+  @IsOptional()
+  @Type(() => Number)
   condominiumId: number;
 }
