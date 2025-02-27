@@ -106,7 +106,7 @@ model Reservation {
   endDateTime        DateTime
   spaceReservationId Int
   space              SpaceReservation     @relation(fields: [spaceReservationId], references: [id])
-  situation          SituationReservation
+  situation          SituationReservation @default(ABERTO)
   condominiumId      Int
   condominium        Condominium          @relation(fields: [condominiumId], references: [id])
   createdAt          DateTime             @default(now())
