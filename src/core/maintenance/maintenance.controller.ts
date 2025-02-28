@@ -7,14 +7,16 @@ import {
   Patch,
   Post,
   Query,
-  SetMetadata,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
+import { InjectContext } from '../common/decorators/context.decorator';
 import { ContextGuard } from '../common/guards/context.guard';
+import { ContextInterceptor } from '../common/interceptor/context.interceptor';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
 import { MaintenanceService } from './maintenance.service';
@@ -24,14 +26,17 @@ export class MaintenanceController {
   constructor(private readonly maintenanceService: MaintenanceService) {}
 
   @Post()
+  @UseInterceptors(ContextInterceptor)
+  @InjectContext('userId', 'condominiumId')
   @UseGuards(AuthTokenGuard, ContextGuard)
-  @SetMetadata('context', ['userId', 'condominiumId'])
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createReserveDto: CreateMaintenanceDto) {
     return this.maintenanceService.create(createReserveDto);
   }
 
   @Get()
+  @UseInterceptors(ContextInterceptor)
+  @InjectContext('condominiumIds')
   @UseGuards(AuthTokenGuard, ContextGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   findAll(@Query() query: FindAllMaintenanceDto) {

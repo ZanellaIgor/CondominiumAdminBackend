@@ -1,6 +1,13 @@
 import { Situation } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class FindAllMaintenanceDto {
   @IsOptional()
@@ -23,9 +30,9 @@ export class FindAllMaintenanceDto {
   @IsEnum(Situation)
   situation: Situation;
 
+  @IsArray()
   @IsOptional()
-  @IsInt()
-  condominiumId?: number;
+  condominiumIds?: number[];
 
   @IsOptional()
   @IsInt()

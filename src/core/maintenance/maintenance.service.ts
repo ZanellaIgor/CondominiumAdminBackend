@@ -19,13 +19,14 @@ export class MaintenanceService {
   }
 
   async findAll(query: FindAllMaintenanceDto) {
-    const { page, limit, title, situation } = query;
+    const { page, limit, title, situation, condominiumIds } = query;
     const offset = (page - 1) * limit;
 
     const where = {
       AND: [
         title ? { title: { contains: title } } : {},
         situation ? { situation: situation } : {},
+        condominiumIds ? { condominiumId: { in: condominiumIds } } : {},
       ],
     };
 
