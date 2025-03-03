@@ -10,7 +10,7 @@ import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/core/auth/const/auth.constants';
 import { CONTEXT_FIELDS_KEY } from '../decorators/context.decorator';
 
 @Injectable()
-export class ContextInterceptor implements NestInterceptor {
+export class QueryContextInterceptor implements NestInterceptor {
   constructor(private reflector: Reflector) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -26,26 +26,29 @@ export class ContextInterceptor implements NestInterceptor {
 
     if (!fieldsToInject) return next.handle();
 
-    if (fieldsToInject.includes('userId') && !request.body.userId) {
-      request.body.userId = Number(user.userId);
+    if (fieldsToInject.includes('userId') && !request.query.userId) {
+      request.query.userId = Number(user.userId);
     }
 
     if (
       fieldsToInject.includes('condominiumId') &&
-      !request.body.condominiumId
+      !request.query.condominiumId
     ) {
-      request.body.condominiumId = Number(user.condominiumIds?.[0] || null);
+      request.query.condominiumId = user.condominiumIds?.[0] || null;
     }
 
     if (
       fieldsToInject.includes('condominiumIds') &&
-      !request.body.condominiumIds
+      !request.query.condominiumIds
     ) {
-      request.body.condominiumIds = user.condominiumIds;
+      request.query.condominiumIds = user.condominiumIds;
     }
 
-    if (fieldsToInject.includes('apartmentIds') && !request.body.apartmentIds) {
-      request.body.apartmentIds = user.apartmentIds;
+    if (
+      fieldsToInject.includes('apartmentIds') &&
+      !request.query.apartmentIds
+    ) {
+      request.query.apartmentIds = user.apartmentIds;
     }
 
     return next.handle();

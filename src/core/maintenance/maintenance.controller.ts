@@ -16,7 +16,9 @@ import {
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { InjectContext } from '../common/decorators/context.decorator';
 import { ContextGuard } from '../common/guards/context.guard';
-import { ContextInterceptor } from '../common/interceptor/context.interceptor';
+
+import { BodyContextInterceptor } from '../common/interceptor/body-context.interceptor';
+import { QueryContextInterceptor } from '../common/interceptor/query-context.interceptor';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
 import { MaintenanceService } from './maintenance.service';
@@ -26,7 +28,7 @@ export class MaintenanceController {
   constructor(private readonly maintenanceService: MaintenanceService) {}
 
   @Post()
-  @UseInterceptors(ContextInterceptor)
+  @UseInterceptors(BodyContextInterceptor)
   @InjectContext('userId', 'condominiumId')
   @UseGuards(AuthTokenGuard, ContextGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -35,7 +37,7 @@ export class MaintenanceController {
   }
 
   @Get()
-  @UseInterceptors(ContextInterceptor)
+  @UseInterceptors(QueryContextInterceptor)
   @InjectContext('condominiumIds')
   @UseGuards(AuthTokenGuard, ContextGuard)
   @UsePipes(new ValidationPipe({ transform: true }))

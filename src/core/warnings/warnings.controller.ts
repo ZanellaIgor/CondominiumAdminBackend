@@ -20,7 +20,9 @@ import { Roles } from '../common/decorators/role.decorator';
 import { InjectContext } from '../common/decorators/context.decorator';
 import { ContextGuard } from '../common/guards/context.guard';
 import { RolesGuard } from '../common/guards/role.guard';
-import { ContextInterceptor } from '../common/interceptor/context.interceptor';
+
+import { BodyContextInterceptor } from '../common/interceptor/body-context.interceptor';
+import { QueryContextInterceptor } from '../common/interceptor/query-context.interceptor';
 import { CreateWarningDto } from './dto/create-warning.dto';
 import { FindAllWarningsDto } from './dto/filter-warning.dto';
 import { UpdateWarningDto } from './dto/update-warning.dto';
@@ -31,7 +33,7 @@ export class WarningsController {
   constructor(private readonly warningsService: WarningsService) {}
 
   @Post()
-  @UseInterceptors(ContextInterceptor)
+  @UseInterceptors(BodyContextInterceptor)
   @InjectContext('userId', 'condominiumId')
   @UseGuards(AuthTokenGuard, ContextGuard)
   create(@Body() createWarningDto: CreateWarningDto) {
@@ -40,6 +42,8 @@ export class WarningsController {
 
   @Get()
   @UseGuards(AuthTokenGuard)
+  @UseInterceptors(QueryContextInterceptor)
+  @InjectContext('condominiumId')
   @UsePipes(new ValidationPipe({ transform: true }))
   findAll(@Query() query: FindAllWarningsDto) {
     return this.warningsService.findAll(query);
