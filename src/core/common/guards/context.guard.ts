@@ -14,6 +14,13 @@ export class ContextGuard implements CanActivate {
 
     if (!user) return false;
 
+    this.validateBodyInContext(request, user);
+    this.validateQueryInContext(request, user);
+
+    return true;
+  }
+
+  private validateBodyInContext(request: any, user: any) {
     this.validateInContext(request.body.userId, user.userId, 'User');
     this.validateInContext(
       request.body.condominiumId,
@@ -30,16 +37,36 @@ export class ContextGuard implements CanActivate {
       user.apartmentIds,
       'Apartment',
     );
+  }
 
-    return true;
+  private validateQueryInContext(request: any, user: any) {
+    this.validateInContext(request.query.userId, user.userId, 'User');
+    this.validateInContext(
+      request.query.condominiumId,
+      user.condominiumIds,
+      'Condominium',
+    );
+    this.validateArrayInContext(
+      request.query.condominiumIds,
+      user.condominiumIds,
+      'Condominium',
+    );
+    this.validateArrayInContext(
+      request.query.apartmentIds,
+      user.apartmentIds,
+      'Apartment',
+    );
   }
 
   private validateInContext(
-    value: number,
+    value: number | string,
     allowedValues: number[],
     field: string,
   ) {
-    if (value && !allowedValues.includes(value)) {
+    if (!value) return;
+
+    const numericValue = Number(value);
+    if (!allowedValues.includes(numericValue)) {
       throw new ForbiddenException(
         `${field} ID is not within allowed context.`,
       );
