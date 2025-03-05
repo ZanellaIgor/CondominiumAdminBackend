@@ -12,7 +12,10 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { Role } from '@prisma/client';
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
+import { Roles } from '../common/decorators/role.decorator';
+import { RolesGuard } from '../common/guards/role.guard';
 import { CondominiumService } from './condominium.service';
 import { CreateCondominiumDto } from './dto/create-condominium';
 import { FindAllCondominiumDto } from './dto/filter-condominium';
@@ -26,7 +29,8 @@ export class CondominiumController {
   constructor(private readonly condominiumService: CondominiumService) {}
 
   @Post()
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Cria um novo condomínio' })
   @ApiResponse({ status: 201, description: 'Condomínio criado com sucesso.' })
@@ -66,6 +70,8 @@ export class CondominiumController {
 
   @Patch(':id')
   @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,
