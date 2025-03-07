@@ -13,7 +13,8 @@ export class CreateApartmentDto {
   condominiumId: number;
 
   @ApiProperty({
-    description: 'ID do usuário associado (opcional)',
+    description:
+      'ID do usuário associado (opcional), pega do token caso não seja informado',
     example: 2,
     required: false,
   })

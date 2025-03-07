@@ -25,6 +25,7 @@ import { UpdateCondominiumDto } from './dto/update-condominium';
 
 @ApiTags('Condominíos')
 @Controller('condominium')
+@ApiResponse({ status: 401, description: 'Usuário nao autenticado.' })
 export class CondominiumController {
   constructor(private readonly condominiumService: CondominiumService) {}
 

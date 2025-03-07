@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -25,6 +26,7 @@ import { UpdateApartmentDto } from './dto/update-apartment.dto';
 
 @ApiTags('Apartamentos')
 @Controller('apartment')
+@ApiResponse({ status: 401, description: 'Usuário nao autenticado.' })
 export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
@@ -32,7 +34,11 @@ export class ApartmentController {
   @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   @ApiOperation({ summary: 'Cria um novo apartamento' })
-  @ApiResponse({ status: 201, description: 'Apartamento criado com sucesso.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Apartamento criado com sucesso.',
+    type: null,
+  })
   @ApiResponse({
     status: 400,
     description: 'Não foi possível criar o apartamento.',
@@ -64,8 +70,8 @@ export class ApartmentController {
     type: ApartmentResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Apartamento não encontrado.' })
-  findOne(@Param('id') id: string) {
-    return this.apartmentService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.apartmentService.findOne(id);
   }
 
   @Patch(':id')
@@ -75,10 +81,14 @@ export class ApartmentController {
   @ApiResponse({
     status: 200,
     description: 'Apartamento atualizado com sucesso.',
+    type: null,
   })
   @ApiResponse({ status: 404, description: 'Apartamento não encontrado.' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateApartmentDto) {
-    return this.apartmentService.update(+id, updateUserDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateApartmentDto: UpdateApartmentDto,
+  ) {
+    return this.apartmentService.update(id, updateApartmentDto);
   }
 
   @Delete(':id')

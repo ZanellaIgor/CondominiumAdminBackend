@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
+import { UpdateMaintenanceDto } from './dto/update-maintenance.dto';
 
 @Injectable()
 export class MaintenanceService {
@@ -58,7 +59,7 @@ export class MaintenanceService {
     return this.prisma.maintenance.findUnique({ where: { id } });
   }
 
-  async update(id: number, updateReserveDto: CreateMaintenanceDto) {
+  async update(id: number, updateReserveDto: UpdateMaintenanceDto) {
     const { userId, condominiumId, ...data } = updateReserveDto;
     return this.prisma.maintenance.update({
       where: { id },
