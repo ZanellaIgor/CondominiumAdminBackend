@@ -35,6 +35,9 @@ export class WarningsService {
       skip: offset,
       take: limit,
       where,
+      include: {
+        condominium: true,
+      },
     });
 
     const totalCount = await this.prisma.warning.count({ where });

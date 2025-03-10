@@ -45,7 +45,6 @@ export class SpaceReservationController {
 
   @Get()
   @UseGuards(AuthTokenGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.MASTER)
   @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Lista todos os locais para reserva' })
   @ApiResponse({

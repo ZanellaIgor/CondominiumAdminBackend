@@ -19,6 +19,11 @@ export async function reservationSeed() {
         id: 1,
       },
     },
+    apartament: {
+      connect: {
+        id: 1,
+      },
+    },
   };
 
   try {

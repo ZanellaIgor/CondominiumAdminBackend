@@ -34,6 +34,10 @@ export class CreateReservationDto {
   @IsInt()
   spaceReservationId: number;
 
+  @IsOptional()
+  @IsInt()
+  apartamentId: number;
+
   @IsNotEmpty()
   @IsInt()
   condominiumId: number;

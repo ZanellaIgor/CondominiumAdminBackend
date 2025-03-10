@@ -31,7 +31,8 @@ model Apartment {
   condominium   Condominium @relation(fields: [condominiumId], references: [id])
   users         User[]      @relation("UserApartments")
 
-  Answer Answer[]
+  Answer      Answer[]
+  Reservation Reservation[]
 }
 
 model Condominium {
@@ -111,6 +112,8 @@ model Reservation {
   condominium        Condominium          @relation(fields: [condominiumId], references: [id])
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
+  apartamentId       Int                  @default(1)
+  apartament         Apartment            @relation(fields: [apartamentId], references: [id])
 }
 
 model Maintenance {
