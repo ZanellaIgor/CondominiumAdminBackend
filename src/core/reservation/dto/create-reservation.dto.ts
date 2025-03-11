@@ -36,7 +36,7 @@ export class CreateReservationDto {
 
   @IsOptional()
   @IsInt()
-  apartamentId: number;
+  apartmentId: number;
 
   @IsNotEmpty()
   @IsInt()

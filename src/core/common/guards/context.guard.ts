@@ -22,18 +22,27 @@ export class ContextGuard implements CanActivate {
 
   private validateBodyInContext(request: any, user: any) {
     this.validateInContext(request.body.userId, user.userId, 'User');
+
     this.validateInContext(
       request.body.condominiumId,
       user.condominiumIds,
       'Condominium',
     );
+
     this.validateArrayInContext(
       request.body.condominiumIds,
       user.condominiumIds,
       'Condominium',
     );
+
     this.validateArrayInContext(
       request.body.apartmentIds,
+      user.apartmentIds,
+      'Apartment',
+    );
+
+    this.validateArrayInContext(
+      request.body.apartmentId,
       user.apartmentIds,
       'Apartment',
     );
@@ -66,10 +75,18 @@ export class ContextGuard implements CanActivate {
     if (!value) return;
 
     const numericValue = Number(value);
-    if (!allowedValues.includes(numericValue)) {
-      throw new ForbiddenException(
-        `${field} ID is not within allowed context.`,
-      );
+    if (typeof allowedValues === 'number') {
+      if (numericValue !== allowedValues) {
+        throw new ForbiddenException(
+          `${field} ID is not within allowed context.`,
+        );
+      }
+    } else if (Array.isArray(allowedValues)) {
+      if (!allowedValues.includes(numericValue)) {
+        throw new ForbiddenException(
+          `${field} ID is not within allowed context.`,
+        );
+      }
     }
   }
 

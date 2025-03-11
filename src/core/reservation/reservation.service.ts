@@ -10,13 +10,13 @@ export class ReservationService {
   constructor(private prisma: PrismaService) {}
 
   async create(createReserveDto: CreateReservationDto) {
-    const { userId, condominiumId, spaceReservationId, apartamentId, ...data } =
+    const { userId, condominiumId, spaceReservationId, apartmentId, ...data } =
       createReserveDto;
     return this.prisma.reservation.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
-        apartament: { connect: { id: apartamentId } },
+        apartament: { connect: { id: apartmentId } },
         user: { connect: { id: userId } },
         space: spaceReservationId
           ? { connect: { id: spaceReservationId } }
@@ -78,7 +78,7 @@ export class ReservationService {
   }
 
   async update(id: number, updateReserveDto: UpdateReservationDto) {
-    const { userId, condominiumId, spaceReservationId, apartamentId, ...data } =
+    const { userId, condominiumId, spaceReservationId, apartmentId, ...data } =
       updateReserveDto;
     return this.prisma.reservation.update({
       where: { id },
@@ -88,7 +88,7 @@ export class ReservationService {
           ? { connect: { id: condominiumId } }
           : undefined,
         user: userId ? { connect: { id: userId } } : undefined,
-        apartament: { connect: { id: apartamentId } },
+        apartament: { connect: { id: apartmentId } },
         space: spaceReservationId
           ? { connect: { id: spaceReservationId } }
           : undefined,

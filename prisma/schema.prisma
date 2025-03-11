@@ -112,8 +112,8 @@ model Reservation {
   condominium        Condominium          @relation(fields: [condominiumId], references: [id])
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  apartamentId       Int                  @default(1)
-  apartament         Apartment            @relation(fields: [apartamentId], references: [id])
+  apartmentId       Int                  @default(1)
+  apartament         Apartment            @relation(fields: [apartmentId], references: [id])
 }
 
 model Maintenance {

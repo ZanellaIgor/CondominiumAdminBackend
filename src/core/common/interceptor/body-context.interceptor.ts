@@ -48,6 +48,10 @@ export class BodyContextInterceptor implements NestInterceptor {
       request.body.apartmentIds = user.apartmentIds;
     }
 
+    if (fieldsToInject.includes('apartmentId') && !request.body.apartmentId) {
+      request.body.apartmentId = user.apartmentIds[0];
+    }
+
     return next.handle();
   }
 }

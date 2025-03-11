@@ -9,12 +9,14 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
+import { InjectContext } from '../common/decorators/context.decorator';
+import { ContextGuard } from '../common/guards/context.guard';
+import { BodyContextInterceptor } from '../common/interceptor/body-context.interceptor';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { FindAllReservationDto } from './dto/filter-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
@@ -27,8 +29,9 @@ export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   @Post()
-  @UseGuards(AuthTokenGuard)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UseInterceptors(BodyContextInterceptor)
+  @InjectContext('apartmentId')
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @ApiOperation({ summary: 'Cria uma nova reserva' })
   @ApiResponse({
     status: 201,
@@ -45,7 +48,6 @@ export class ReservationController {
 
   @Get()
   @UseGuards(AuthTokenGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Busca reservas paginadas' })
   @ApiResponse({
     status: 200,
@@ -76,7 +78,6 @@ export class ReservationController {
 
   @Patch(':id')
   @UseGuards(AuthTokenGuard)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Atualiza uma reserva existente' })
   @ApiResponse({
     status: 200,
