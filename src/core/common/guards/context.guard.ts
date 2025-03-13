@@ -22,7 +22,7 @@ export class ContextGuard implements CanActivate {
 
   private validateBodyInContext(request: any, user: any) {
     this.validateInContext(request.body.userId, user.userId, 'User');
-
+    console.log(user);
     this.validateInContext(
       request.body.condominiumId,
       user.condominiumIds,
@@ -95,7 +95,11 @@ export class ContextGuard implements CanActivate {
     allowedValues: number[],
     field: string,
   ) {
-    if (values && !values.every((id) => allowedValues.includes(id))) {
+    if (
+      values &&
+      values.length > 0 &&
+      !values?.every((id) => allowedValues.includes(id))
+    ) {
       throw new ForbiddenException(
         `${field} IDs are not within allowed context.`,
       );

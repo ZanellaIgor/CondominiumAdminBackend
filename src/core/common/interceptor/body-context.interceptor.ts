@@ -5,6 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Role } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/core/auth/const/auth.constants';
 import { CONTEXT_FIELDS_KEY } from '../decorators/context.decorator';
@@ -45,11 +46,21 @@ export class BodyContextInterceptor implements NestInterceptor {
     }
 
     if (fieldsToInject.includes('apartmentIds') && !request.body.apartmentIds) {
-      request.body.apartmentIds = user.apartmentIds;
+      if (
+        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
+        user?.apartmentIds &&
+        user.apartmentIds.length > 0
+      )
+        request.body.apartmentIds = user.apartmentIds;
     }
 
     if (fieldsToInject.includes('apartmentId') && !request.body.apartmentId) {
-      request.body.apartmentId = user.apartmentIds[0];
+      if (
+        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
+        user?.apartmentIds &&
+        user.apartmentIds.length > 0
+      )
+        request.body.apartmentId = user.apartmentIds[0];
     }
 
     return next.handle();

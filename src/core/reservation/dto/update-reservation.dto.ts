@@ -1,10 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { SituationReservation } from '@prisma/client';
-import { IsEnum, IsNotEmpty } from 'class-validator';
-import { CreateReservationDto } from './create-reservation.dto';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
-export class UpdateReservationDto extends PartialType(CreateReservationDto) {
-  @IsNotEmpty()
+export class UpdateReservationDto {
+  @IsOptional()
   @IsEnum(SituationReservation)
   situation: SituationReservation;
+
+  @IsOptional()
+  @IsString()
+  description: SituationReservation;
 }

@@ -68,6 +68,7 @@ enum SituationReservation {
   ABERTO
   ANALISE
   CONFIRMADO
+  NAO_APROVADO
 }
 
 enum Category {
