@@ -10,8 +10,45 @@ import { Observable } from 'rxjs';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/core/auth/const/auth.constants';
 import { CONTEXT_FIELDS_KEY } from '../decorators/context.decorator';
 
+interface InjectionRule {
+  fieldName: string;
+  getValue: (user: any) => any;
+  condition?: (user: any) => boolean;
+}
+
 @Injectable()
 export class BodyContextInterceptor implements NestInterceptor {
+  private injectionRules: InjectionRule[] = [
+    {
+      fieldName: 'userId',
+      getValue: (user) => Number(user.userId),
+    },
+    {
+      fieldName: 'condominiumId',
+      getValue: (user) => Number(user.condominiumIds?.[0] || null),
+    },
+    {
+      fieldName: 'condominiumIds',
+      getValue: (user) => user.condominiumIds,
+    },
+    {
+      fieldName: 'apartmentIds',
+      getValue: (user) => user.apartmentIds,
+      condition: (user) => 
+        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
+        Array.isArray(user.apartmentIds) &&
+        user.apartmentIds.length > 0
+    },
+    {
+      fieldName: 'apartmentId',
+      getValue: (user) => user.apartmentIds[0],
+      condition: (user) => 
+        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
+        Array.isArray(user.apartmentIds) &&
+        user.apartmentIds.length > 0
+    }
+  ];
+
   constructor(private reflector: Reflector) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -25,44 +62,30 @@ export class BodyContextInterceptor implements NestInterceptor {
       context.getHandler(),
     );
 
-    if (!fieldsToInject) return next.handle();
+    if (!fieldsToInject || !fieldsToInject.length) return next.handle();
 
-    if (fieldsToInject.includes('userId') && !request.body.userId) {
-      request.body.userId = Number(user.userId);
-    }
-
-    if (
-      fieldsToInject.includes('condominiumId') &&
-      !request.body.condominiumId
-    ) {
-      request.body.condominiumId = Number(user.condominiumIds?.[0] || null);
-    }
-
-    if (
-      fieldsToInject.includes('condominiumIds') &&
-      !request.body.condominiumIds
-    ) {
-      request.body.condominiumIds = user.condominiumIds;
-    }
-
-    if (fieldsToInject.includes('apartmentIds') && !request.body.apartmentIds) {
-      if (
-        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
-        user?.apartmentIds &&
-        user.apartmentIds.length > 0
-      )
-        request.body.apartmentIds = user.apartmentIds;
-    }
-
-    if (fieldsToInject.includes('apartmentId') && !request.body.apartmentId) {
-      if (
-        (user.role === Role.MASTER || user.role === Role.ADMIN) &&
-        user?.apartmentIds &&
-        user.apartmentIds.length > 0
-      )
-        request.body.apartmentId = user.apartmentIds[0];
-    }
+    this.injectFields(fieldsToInject, user, request.body);
 
     return next.handle();
+  }
+
+  private injectFields(fieldsToInject: string[], user: any, body: any): void {
+    for (const field of fieldsToInject) {
+      const rule = this.injectionRules.find(r => r.fieldName === field);
+      
+      if (!rule) continue;
+      
+      // Verifica se o campo já existe no body
+      if (body[field] !== undefined) continue;
+      
+      // Verifica se há uma condição especial para injetar o campo
+      if (rule.condition && !rule.condition(user)) continue;
+      
+      // Injeta o valor no body
+      const value = rule.getValue(user);
+      if (value !== undefined) {
+        body[field] = value;
+      }
+    }
   }
 }

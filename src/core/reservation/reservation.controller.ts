@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { IResponse } from 'src/utils/interfaces/response.interface';
 import { AuthTokenGuard } from '../auth/guard/auth-token.guard';
 import { InjectContext } from '../common/decorators/context.decorator';
 import { ContextGuard } from '../common/guards/context.guard';
@@ -42,7 +43,7 @@ export class ReservationController {
     status: 400,
     description: 'Não foi possível criar a reserva.',
   })
-  create(@Body() createReserveDto: CreateReservationDto) {
+  create(@Body() createReserveDto: CreateReservationDto): Promise<IResponse> {
     return this.reservationService.create(createReserveDto);
   }
 
@@ -90,7 +91,7 @@ export class ReservationController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateReservationDto: UpdateReservationDto,
-  ) {
+  ): Promise<IResponse> {
     return this.reservationService.update(id, updateReservationDto);
   }
 

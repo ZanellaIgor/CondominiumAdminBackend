@@ -22,7 +22,7 @@ export class ContextGuard implements CanActivate {
 
   private validateBodyInContext(request: any, user: any) {
     this.validateInContext(request.body.userId, user.userId, 'User');
-    console.log(user);
+
     this.validateInContext(
       request.body.condominiumId,
       user.condominiumIds,
