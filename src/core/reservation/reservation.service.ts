@@ -21,7 +21,6 @@ export class ReservationService {
       ...data
     } = createReserveDto;
 
-    // Validação 1: Verificar se startDateTime é anterior a endDateTime
     if (startDateTime >= endDateTime) {
       throw new HttpException(
         'A data de início deve ser anterior à data de fim',

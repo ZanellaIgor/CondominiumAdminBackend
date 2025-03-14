@@ -1,4 +1,4 @@
-import { Category, Situation } from '@prisma/client';
+import { Category } from '@prisma/client';
 import {
   IsEnum,
   IsNotEmpty,
@@ -15,10 +15,6 @@ export class CreateMaintenanceDto {
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsNotEmpty()
-  @IsEnum(Situation)
-  situation: Situation;
 
   @IsNotEmpty()
   @IsEnum(Category)

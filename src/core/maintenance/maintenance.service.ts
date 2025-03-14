@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
@@ -10,13 +10,24 @@ export class MaintenanceService {
 
   async create(createReserveDto: CreateMaintenanceDto) {
     const { userId, condominiumId, ...data } = createReserveDto;
-    return this.prisma.maintenance.create({
+    const maintenance = await this.prisma.maintenance.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },
         user: { connect: { id: userId } },
       },
     });
+
+    if (!maintenance) {
+      throw new HttpException(
+        'Não foi possível criar a ordem de manutenção',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Ordem de manutenção criada com sucesso!',
+    };
   }
 
   async findAll(query: FindAllMaintenanceDto) {
@@ -60,15 +71,23 @@ export class MaintenanceService {
   }
 
   async update(id: number, updateReserveDto: UpdateMaintenanceDto) {
-    const { userId, condominiumId, ...data } = updateReserveDto;
-    return this.prisma.maintenance.update({
+    const maintenance = await this.prisma.maintenance.update({
       where: { id },
       data: {
-        ...data,
-        condominium: { connect: { id: condominiumId } },
-        user: { connect: { id: userId } },
+        ...updateReserveDto,
       },
     });
+
+    if (!maintenance) {
+      throw new HttpException(
+        'Não foi possível editar a ordem de manutenção',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Ordem de manutenção editada com sucesso!',
+    };
   }
 
   async remove(id: number) {

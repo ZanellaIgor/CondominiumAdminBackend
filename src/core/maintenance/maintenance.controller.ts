@@ -43,7 +43,6 @@ export class MaintenanceController {
   @ApiResponse({
     status: 201,
     description: 'Ordem de manutenção criada com sucesso.',
-    type: null,
   })
   @ApiResponse({
     status: 400,
