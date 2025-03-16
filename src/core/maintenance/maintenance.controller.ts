@@ -26,6 +26,7 @@ import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
 import { FindAllMaintenanceDto } from './dto/filter-reservation.dto';
 import { UpdateMaintenanceDto } from './dto/update-maintenance.dto';
 
+import { IResponse } from 'src/utils/interfaces/response.interface';
 import { MaintenanceService } from './maintenance.service';
 
 @ApiTags('Manutenções')
@@ -48,7 +49,9 @@ export class MaintenanceController {
     status: 400,
     description: 'Não foi possível criar a ordem de manutenção.',
   })
-  create(@Body() createMaintenanceDto: CreateMaintenanceDto) {
+  create(
+    @Body() createMaintenanceDto: CreateMaintenanceDto,
+  ): Promise<IResponse> {
     return this.maintenanceService.create(createMaintenanceDto);
   }
 
@@ -101,7 +104,7 @@ export class MaintenanceController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMaintenanceDto: UpdateMaintenanceDto,
-  ) {
+  ): Promise<IResponse> {
     return this.maintenanceService.update(id, updateMaintenanceDto);
   }
 

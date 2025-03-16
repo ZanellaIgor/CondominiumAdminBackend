@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { FindAllSurveyDto } from './dto/filter-survey.dto';
@@ -19,7 +19,7 @@ export class SurveyService {
         : undefined,
     }));
 
-    return this.prisma.survey.create({
+    const survey = this.prisma.survey.create({
       data: {
         ...surveyData,
         questions: {
@@ -27,6 +27,11 @@ export class SurveyService {
         },
       },
     });
+    if (!survey) throw new NotFoundException('Survey not found');
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Ordem de manutenção criada com sucesso!',
+    };
   }
 
   async findAllSurveys(query: FindAllSurveyDto) {
@@ -139,8 +144,11 @@ export class SurveyService {
           },
         },
       });
-
-      return updatedSurvey;
+      if (!updatedSurvey) throw new NotFoundException('Survey not found');
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Enquete criada com sucesso!',
+      };
     });
   }
 

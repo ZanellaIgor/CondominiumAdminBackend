@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateAnswersDto } from './dto/create-answer.dto';
@@ -37,7 +37,7 @@ export class AnswerService {
       skipDuplicates: true,
     });
 
-    await this.prisma.surveyParticipation.upsert({
+    const participation = await this.prisma.surveyParticipation.upsert({
       where: {
         surveyId_userId: {
           surveyId,
@@ -53,6 +53,14 @@ export class AnswerService {
         hasResponded: true,
       },
     });
+
+    if (!participation) {
+      throw new BadRequestException('Participation not found.');
+    }
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Resposta criada com sucesso!',
+    };
   }
 
   async findAnswersByUser(userId: number) {
