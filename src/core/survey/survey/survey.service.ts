@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/infra/prisma.service';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { FindAllSurveyDto } from './dto/filter-survey.dto';
@@ -43,7 +48,7 @@ export class SurveyService {
       where: {
         condominiumId,
       },
-      include: { SurveyParticipation: true },
+      include: { SurveyParticipation: { where: { userId: query.userId } } },
     });
   }
 
@@ -66,7 +71,17 @@ export class SurveyService {
       });
 
       if (!existingSurvey) {
-        throw new Error('Pesquisa não encontrada');
+        throw new NotFoundException('Pesquisa não encontrada!');
+      }
+
+      const existingAnswers = await prisma.surveyParticipation.findFirst({
+        where: { surveyId: id },
+      });
+
+      if (existingAnswers) {
+        throw new BadRequestException(
+          'A pesquisa já possui respostas e não pode ser alterada!',
+        );
       }
 
       const existingQuestionIds = existingSurvey.questions.map((q) => q.id);
@@ -144,10 +159,13 @@ export class SurveyService {
           },
         },
       });
-      if (!updatedSurvey) throw new NotFoundException('Survey not found');
+      if (!updatedSurvey) {
+        throw new NotFoundException('Erro ao atualizar a pesquisa');
+      }
+
       return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Enquete criada com sucesso!',
+        statusCode: HttpStatus.OK,
+        message: 'Enquete atualizada com sucesso!',
       };
     });
   }
