@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Category, Situation } from '@prisma/client';
 import { prismaSeed } from '../prisma-seeds';
 
@@ -246,13 +247,11 @@ export async function warningSeed() {
   ];
 
   try {
-    await prismaSeed.warning.upsert({
-      where: { id: 1 },
-      update: {},
-      create: data,
+    await prismaSeed.warning.createMany({
+      data: warningsData,
     });
-    console.log('Aviso criado ou atualizado com sucesso!');
+    Logger.log('Aviso criado ou atualizado com sucesso!');
   } catch (error) {
-    console.error('Erro ao criar ou atualizar o aviso', error);
+    Logger.error('Erro ao criar ou atualizar o aviso', error);
   }
 }

@@ -2,4 +2,6 @@ export enum SituationReservation {
   ABERTO = 'ABERTO',
   ANALISE = 'ANALISE',
   CONFIRMADO = 'CONFIRMADO',
+  FINALIZADO = 'FINALIZADO',
+  CANCELADO = 'CANCELADO',
 }

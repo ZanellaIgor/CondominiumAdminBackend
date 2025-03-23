@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { SituationReservation } from '@prisma/client';
 import { PrismaService } from 'src/infra/prisma.service';
 import { IResponse } from 'src/utils/interfaces/response.interface';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -31,6 +32,7 @@ export class ReservationService {
     const conflictingReservation = await this.prisma.reservation.findFirst({
       where: {
         spaceReservationId,
+        situation: { not: SituationReservation.CANCELADO },
         OR: [
           {
             startDateTime: { lte: endDateTime },
