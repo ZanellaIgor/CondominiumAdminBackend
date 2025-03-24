@@ -14,6 +14,6 @@ export async function condominiumSeed() {
     });
     Logger.log('Condominio criado com sucesso!');
   } catch (error) {
-    Logger.log('Condominio não criado', error);
+    Logger.error('Condominio não criado', error);
   }
 }

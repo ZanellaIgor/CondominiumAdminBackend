@@ -55,7 +55,7 @@ export class ReservationService {
         startDateTime,
         endDateTime,
         condominium: { connect: { id: condominiumId } },
-        apartament: apartmentId ? { connect: { id: apartmentId } } : undefined,
+        apartment: apartmentId ? { connect: { id: apartmentId } } : undefined,
         user: { connect: { id: userId } },
         space: { connect: { id: spaceReservationId } },
       },
@@ -108,7 +108,7 @@ export class ReservationService {
             name: true,
           },
         },
-        apartament: {
+        apartment: {
           select: {
             id: true,
             name: true,

@@ -68,7 +68,7 @@ enum SituationReservation {
   ABERTO
   ANALISE
   CONFIRMADO
-  NAO_APROVADO
+  REPROVADO
   FINALIZADO   
   CANCELADO
 }
@@ -116,7 +116,7 @@ model Reservation {
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   apartmentId       Int                  @default(1)
-  apartament         Apartment            @relation(fields: [apartmentId], references: [id])
+  apartment         Apartment            @relation(fields: [apartmentId], references: [id])
 
   @@unique([spaceReservationId, startDateTime, endDateTime])
 }
@@ -139,7 +139,6 @@ model Survey {
   id                  Int                   @id @default(autoincrement())
   title               String                @db.VarChar(60)
   description         String?               @db.VarChar(120)
-  status              Boolean               @default(true)
   questions           Question[]
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
@@ -207,7 +206,7 @@ model Answer {
   condominium   Condominium? @relation(fields: [condominiumId], references: [id])
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  status        Boolean      @default(true)
+ 
 
   @@unique([userId, questionId])
 }

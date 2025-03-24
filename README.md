@@ -89,10 +89,28 @@ Instalação as dependências:
 npm install
 ```
 
+ou
+
+```bash
+yarn install
+```
+
 Iniciar container
 
 ```bash
 docker compose up -d
+```
+
+Rodar migration
+
+```bash
+npm run prisma migrate dev
+```
+
+ou
+
+```bash
+yarn prisma migrate dev
 ```
 
 Popular banco com seed
@@ -101,10 +119,22 @@ Popular banco com seed
 npm run seed
 ```
 
+ou
+
+```bash
+yarn seed
+```
+
 Iniciar projeto
 
 ```bash
 npm run dev
+```
+
+ou
+
+```bash
+yarn run dev
 ```
 
 Obs: Verificar configuração do .env.example, e alterar para .env

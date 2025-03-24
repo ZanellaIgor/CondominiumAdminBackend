@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { SituationReservation } from '@prisma/client';
 import { prismaSeed } from '../prisma-seeds';
 
@@ -49,7 +50,7 @@ export async function reservationSeed() {
       startDateTime: futureDate,
       endDateTime: new Date(futureDate.getTime() + 10800000),
       spaceId: 5,
-      situation: SituationReservation.NAO_APROVADO,
+      situation: SituationReservation.REPROVADO,
       userId: 26,
       condominiumId: 3,
       apartamentId: 25,
@@ -90,13 +91,13 @@ export async function reservationSeed() {
           situation: reservation.situation,
           user: { connect: { id: reservation.userId } },
           condominium: { connect: { id: reservation.condominiumId } },
-          apartament: { connect: { id: reservation.apartamentId } },
+          apartment: { connect: { id: reservation.apartamentId } },
         },
       });
     }
 
-    console.log('Reservas criadas com sucesso!');
+    Logger.log('Reservas criadas com sucesso!');
   } catch (error) {
-    console.error('Erro ao criar reservas', error);
+    Logger.error('Erro ao criar reservas', error);
   }
 }

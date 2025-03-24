@@ -13,7 +13,7 @@ export class ApartmentService {
   async create(data: CreateApartmentDto) {
     const { condominiumId, ...rest } = data;
 
-    const apartament = await this.prisma.apartment.create({
+    const apartment = await this.prisma.apartment.create({
       data: {
         ...rest,
         condominium: {
@@ -21,7 +21,7 @@ export class ApartmentService {
         },
       },
     });
-    if (!apartament) {
+    if (!apartment) {
       throw new HttpException(
         'Não foi possível criar o apartamento',
         HttpStatus.BAD_REQUEST,
@@ -60,7 +60,7 @@ export class ApartmentService {
       };
     }
 
-    const apartament = await this.prisma.apartment.findMany({
+    const apartment = await this.prisma.apartment.findMany({
       skip: offset,
       take: limit,
       where,
@@ -71,7 +71,7 @@ export class ApartmentService {
 
     const totalCount = await this.prisma.apartment.count({ where });
     return {
-      data: apartament,
+      data: apartment,
       totalCount,
       page,
       limit,
@@ -88,11 +88,11 @@ export class ApartmentService {
   }
 
   async update(id: number, data: UpdateApartmentDto) {
-    const updateApartament = await this.prisma.apartment.update({
+    const updateApartment = await this.prisma.apartment.update({
       where: { id: Number(id) },
       data,
     });
-    if (!updateApartament) {
+    if (!updateApartment) {
       throw new HttpException(
         'Não foi editar o apartamento',
         HttpStatus.BAD_REQUEST,

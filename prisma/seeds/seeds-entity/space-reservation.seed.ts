@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { prismaSeed } from '../prisma-seeds';
 
 const spaceReservationsSeed = [
@@ -32,8 +33,8 @@ export async function spaceReservationSeed() {
       });
     }
 
-    console.log('Espaços criados com sucesso!');
+    Logger.log('Espaços criados com sucesso!');
   } catch (error) {
-    console.log('Espaços não criados', error);
+    Logger.error('Espaços não criados', error);
   }
 }

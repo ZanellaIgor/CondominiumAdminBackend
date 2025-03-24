@@ -29,7 +29,7 @@ export async function userSeed() {
 
   const userSeed = apartments.map((apartment) => ({
     name: `User ${apartment.name}`,
-    email: `user${apartment.name.toLowerCase().replace(' ', '')}@example.com`,
+    email: `user${apartment.name.toLowerCase().replace(' ', '')}${apartment.id}@example.com`,
     password,
     role: Role.USER,
     apartments: {
@@ -44,13 +44,13 @@ export async function userSeed() {
     await prismaSeed.user.create({
       data: userSeedMaster,
     });
-    await prismaSeed.user.createMany({
-      data: usersAdminSeed,
-    });
+    for (const user of usersAdminSeed) {
+      await prismaSeed.user.create({ data: user });
+    }
 
-    await prismaSeed.user.createMany({
-      data: userSeed,
-    });
+    for (const user of userSeed) {
+      await prismaSeed.user.create({ data: user });
+    }
 
     Logger.log('Usuário criado ou atualizado com sucesso!');
   } catch (error) {
