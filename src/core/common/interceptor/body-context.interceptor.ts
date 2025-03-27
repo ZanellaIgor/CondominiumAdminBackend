@@ -34,19 +34,19 @@ export class BodyContextInterceptor implements NestInterceptor {
     {
       fieldName: 'apartmentIds',
       getValue: (user) => user.apartmentIds,
-      condition: (user) => 
+      condition: (user) =>
         (user.role === Role.MASTER || user.role === Role.ADMIN) &&
         Array.isArray(user.apartmentIds) &&
-        user.apartmentIds.length > 0
+        user.apartmentIds.length > 0,
     },
     {
       fieldName: 'apartmentId',
       getValue: (user) => user.apartmentIds[0],
-      condition: (user) => 
+      condition: (user) =>
         (user.role === Role.MASTER || user.role === Role.ADMIN) &&
         Array.isArray(user.apartmentIds) &&
-        user.apartmentIds.length > 0
-    }
+        user.apartmentIds.length > 0,
+    },
   ];
 
   constructor(private reflector: Reflector) {}
@@ -71,16 +71,16 @@ export class BodyContextInterceptor implements NestInterceptor {
 
   private injectFields(fieldsToInject: string[], user: any, body: any): void {
     for (const field of fieldsToInject) {
-      const rule = this.injectionRules.find(r => r.fieldName === field);
-      
+      const rule = this.injectionRules.find((r) => r.fieldName === field);
+
       if (!rule) continue;
-      
+
       // Verifica se o campo já existe no body
       if (body[field] !== undefined) continue;
-      
+
       // Verifica se há uma condição especial para injetar o campo
       if (rule.condition && !rule.condition(user)) continue;
-      
+
       // Injeta o valor no body
       const value = rule.getValue(user);
       if (value !== undefined) {

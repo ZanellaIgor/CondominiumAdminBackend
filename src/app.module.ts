@@ -11,6 +11,7 @@ import { SpaceReservationModule } from './core/space-reservation/space-reservati
 import { AnswerModule } from './core/survey/answer/answer.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
+import { DashboardModule } from './core/dashboard/dashboard.module';
 import { SurveyModule } from './core/survey/survey/survey.module';
 import { UserModule } from './core/user/user.module';
 import { WarningsModule } from './core/warnings/warnings.module';
@@ -18,6 +19,7 @@ import { WarningsModule } from './core/warnings/warnings.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    DashboardModule,
     PersistenceModule,
     WarningsModule,
     ReservationModule,
