@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function seedSurvey() {
+export async function surveySeed() {
   console.log('📋 Criando Surveys...');
 
   const condominium = await prisma.condominium.findFirst();
@@ -43,7 +43,3 @@ async function seedSurvey() {
 
   console.log(`Survey "${survey.title}" criado com sucesso!`);
 }
-
-seedSurvey()
-  .catch((e) => console.error(e))
-  .finally(async () => await prisma.$disconnect());

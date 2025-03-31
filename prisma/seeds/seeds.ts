@@ -7,6 +7,9 @@ import { Logger } from '@nestjs/common';
 import { spaceReservationSeed } from './seeds-entity/space-reservation.seed';
 import { userSeed } from './seeds-entity/user.seed';
 import { warningSeed } from './seeds-entity/warning.seed';
+import { maintenanceSeed } from './seeds-entity/maintenance.seed';
+import { surveySeed } from './seeds-entity/survey.seed';
+import { answerSeed } from './seeds-entity/answer.seed';
 
 const prisma = new PrismaClient();
 
@@ -18,6 +21,10 @@ async function main() {
     await userSeed();
     await reservationSeed();
     await warningSeed();
+    await maintenanceSeed();
+    await surveySeed();
+    await answerSeed();
+
     Logger.log('Seeds executados com sucesso!');
   } catch (error) {
     Logger.error('Erro ao executar os seeds:', error);

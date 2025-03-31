@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prismaSeed = new PrismaClient();
 
-async function seedAnswer() {
+export async function answerSeed() {
   const user = await prismaSeed.user.findFirst();
   const survey = await prismaSeed.survey.findFirst({
     include: { questions: { include: { options: true } } },
@@ -52,7 +52,3 @@ async function seedAnswer() {
 
   Logger.log('Answers criadas com sucesso!');
 }
-
-seedAnswer()
-  .catch((e) => console.error(e))
-  .finally(async () => await prismaSeed.$disconnect());
