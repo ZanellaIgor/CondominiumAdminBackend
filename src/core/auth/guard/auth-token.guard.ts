@@ -41,7 +41,7 @@ export class AuthTokenGuard implements CanActivate {
 
   extraTokenFromHeader(request: Request): string | undefined {
     const authorization = request.headers?.authorization;
-    if (!authorization || !authorization.startsWith('Bearer ')) {
+    if (!authorization?.startsWith('Bearer ')) {
       return;
     }
     const [type, token] = authorization.split(' ');
