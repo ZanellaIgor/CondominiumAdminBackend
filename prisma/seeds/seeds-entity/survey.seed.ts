@@ -1,10 +1,9 @@
+import { Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function surveySeed() {
-  console.log('📋 Criando Surveys...');
-
   const condominium = await prisma.condominium.findFirst();
   if (!condominium) throw new Error('Nenhum condomínio encontrado!');
 
@@ -41,5 +40,5 @@ export async function surveySeed() {
     },
   });
 
-  console.log(`Survey "${survey.title}" criado com sucesso!`);
+  Logger.log(`Survey "${survey.title}" criado com sucesso!`);
 }

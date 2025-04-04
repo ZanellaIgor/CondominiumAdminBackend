@@ -5,7 +5,7 @@ import { prismaSeed } from '../prisma-seeds';
 
 export async function userSeed() {
   const hashService = new BcryptService();
-  const password = await hashService.hash('senhaLOGIN');
+  const password = await hashService.hash('minhaSenha');
   const condominiums = await prismaSeed.condominium.findMany();
 
   const userSeedMaster = {
@@ -17,7 +17,7 @@ export async function userSeed() {
 
   const usersAdminSeed = condominiums.map((condominium) => ({
     name: `Admin ${condominium.name}`,
-    email: `admin${condominium.name.toLowerCase().replace(' ', '')}@example.com`,
+    email: `admin.condominio${condominium.id}@example.com`,
     password,
     role: Role.ADMIN,
     condominiums: {
