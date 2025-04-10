@@ -1,6 +1,7 @@
 import { Role } from '@prisma/client';
 import {
   IsArray,
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsOptional,
@@ -28,6 +29,10 @@ export class CreateUserDto {
   @IsArray()
   @IsOptional()
   condominiumIds?: number[];
+
+  @IsBoolean()
+  @IsOptional()
+  status: boolean;
 
   @IsEnum(Role)
   role: Role;

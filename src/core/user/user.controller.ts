@@ -19,13 +19,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { FindAllUserDto } from './dto/filter-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
+import { UserCreateGuard } from '../common/guards/user-create.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UseGuards(AuthTokenGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard, UserCreateGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);

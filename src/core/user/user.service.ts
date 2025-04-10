@@ -17,7 +17,7 @@ export class UserService {
     const { apartmentIds, condominiumIds, password, ...rest } = data;
     const passwordHash = await this.hashingService.hash(password);
 
-    const user = this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         ...rest,
         password: passwordHash,
@@ -93,7 +93,7 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { id },
       include: {
         apartments: true,
