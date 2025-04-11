@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
@@ -23,6 +24,9 @@ import { FindAllApartmentDto } from './dto/filter-apartment.dto';
 import { ApartmentResponseDto } from './dto/response-apartment.dto';
 import { PaginatedApartmentsResponseDto } from './dto/response-paginated-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
+import { InjectContext } from '../common/decorators/context.decorator';
+import { ContextGuard } from '../common/guards/context.guard';
+import { QueryContextInterceptor } from '../common/interceptor/query-context.interceptor';
 
 @ApiTags('Apartamentos')
 @Controller('apartment')
@@ -48,8 +52,10 @@ export class ApartmentController {
   }
 
   @Get()
-  @UseGuards(AuthTokenGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.MASTER)
+  @UseGuards(AuthTokenGuard)
+  @UseInterceptors(QueryContextInterceptor)
+  @InjectContext('condominiumIds')
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @ApiOperation({ summary: 'Lista todos os apartamentos' })
   @ApiResponse({
     status: 200,

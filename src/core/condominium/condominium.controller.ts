@@ -7,8 +7,7 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -22,6 +21,9 @@ import { FindAllCondominiumDto } from './dto/filter-condominium';
 import { CondominiumResponseDto } from './dto/response-condominium.dto';
 import { PaginatedCondominiumResponseDto } from './dto/response-paginated-condominium.dto';
 import { UpdateCondominiumDto } from './dto/update-condominium';
+import { InjectContext } from '../common/decorators/context.decorator';
+import { QueryContextInterceptor } from '../common/interceptor/query-context.interceptor';
+import { ContextGuard } from '../common/guards/context.guard';
 
 @ApiTags('Condominíos')
 @Controller('condominium')
@@ -31,8 +33,7 @@ export class CondominiumController {
 
   @Post()
   @UseGuards(AuthTokenGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.MASTER)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Roles(Role.MASTER)
   @ApiOperation({ summary: 'Cria um novo condomínio' })
   @ApiResponse({ status: 201, description: 'Condomínio criado com sucesso.' })
   @ApiResponse({
@@ -44,8 +45,9 @@ export class CondominiumController {
   }
 
   @Get()
-  @UseGuards(AuthTokenGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(QueryContextInterceptor)
+  @InjectContext('condominiumIds')
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @ApiOperation({ summary: 'Lista todos os condomínios' })
   @ApiResponse({
     status: 200,
@@ -73,7 +75,6 @@ export class CondominiumController {
   @UseGuards(AuthTokenGuard)
   @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,
     @Body() updateCondominiumDto: UpdateCondominiumDto,

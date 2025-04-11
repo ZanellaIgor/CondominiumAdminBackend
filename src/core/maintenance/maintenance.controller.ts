@@ -10,8 +10,6 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -39,7 +37,6 @@ export class MaintenanceController {
   @UseInterceptors(BodyContextInterceptor)
   @InjectContext('userId', 'condominiumId')
   @UseGuards(AuthTokenGuard, ContextGuard)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Cria uma ordem de manutenção' })
   @ApiResponse({
     status: 201,
@@ -59,7 +56,6 @@ export class MaintenanceController {
   @UseInterceptors(QueryContextInterceptor)
   @InjectContext('condominiumIds')
   @UseGuards(AuthTokenGuard, ContextGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Busca ordens de manutenção paginadas' })
   @ApiResponse({
     status: 200,
@@ -90,7 +86,6 @@ export class MaintenanceController {
 
   @Patch(':id')
   @UseGuards(AuthTokenGuard, ContextGuard)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Atualiza uma ordem de manutenção existente' })
   @ApiResponse({
     status: 200,

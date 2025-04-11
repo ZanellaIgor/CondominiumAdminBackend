@@ -32,7 +32,7 @@ export class CondominiumService {
   async findAll(
     query: FindAllCondominiumDto,
   ): Promise<PaginatedCondominiumResponseDto> {
-    const { page, limit, name } = query;
+    const { page, limit, name, condominiumIds } = query;
     const offset = (page - 1) * limit;
 
     const where = {
@@ -40,6 +40,11 @@ export class CondominiumService {
         name: {
           contains: name,
           mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(!!condominiumIds?.length && {
+        id: {
+          in: condominiumIds,
         },
       }),
     };

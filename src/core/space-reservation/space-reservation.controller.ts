@@ -7,8 +7,7 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
@@ -21,6 +20,9 @@ import { FindAllSpaceReservationDto } from './dto/filter-space-reservation';
 import { PaginatedSpaceReservationResponseDto } from './dto/response-paginated-space-reservationdto';
 import { UpdateSpaceReservationDto } from './dto/update-space-reservation';
 import { SpaceReservationService } from './space-reservation.service';
+import { ContextGuard } from '../common/guards/context.guard';
+import { QueryContextInterceptor } from '../common/interceptor/query-context.interceptor';
+import { InjectContext } from '../common/decorators/context.decorator';
 
 @ApiTags('Espaços comum para reserva')
 @Controller('space-reservation')
@@ -30,9 +32,8 @@ export class SpaceReservationController {
   ) {}
 
   @Post()
-  @UseGuards(AuthTokenGuard, RolesGuard)
+  @UseGuards(AuthTokenGuard, RolesGuard, ContextGuard)
   @Roles(Role.ADMIN, Role.MASTER)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   @ApiOperation({ summary: 'Cria um espaço comum no condominío para reserva' })
   @ApiResponse({ status: 201, description: 'Apartamento criado com sucesso.' })
   @ApiResponse({
@@ -44,8 +45,9 @@ export class SpaceReservationController {
   }
 
   @Get()
-  @UseGuards(AuthTokenGuard, RolesGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(QueryContextInterceptor)
+  @InjectContext('condominiumIds', 'condominiumId')
+  @UseGuards(AuthTokenGuard, ContextGuard)
   @ApiOperation({ summary: 'Lista todos os locais para reserva' })
   @ApiResponse({
     status: 200,
@@ -57,7 +59,9 @@ export class SpaceReservationController {
   }
 
   @Get(':id')
-  @UseGuards(AuthTokenGuard, RolesGuard)
+  @UseInterceptors(QueryContextInterceptor)
+  @InjectContext('condominiumIds')
+  @UseGuards(AuthTokenGuard, RolesGuard, ContextGuard)
   @Roles(Role.ADMIN, Role.MASTER)
   findOne(@Param('id') id: string) {
     return this.spaceReservationService.findOne(+id);
@@ -66,7 +70,6 @@ export class SpaceReservationController {
   @Patch(':id')
   @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.MASTER)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   update(
     @Param('id') id: string,
     @Body() updateReservationDto: UpdateSpaceReservationDto,

@@ -62,7 +62,7 @@ export class UserService {
           mode: Prisma.QueryMode.insensitive,
         },
       }),
-      ...(condominiumIds && {
+      ...(!!condominiumIds?.length && {
         condominiums: {
           some: {
             id: {
@@ -72,6 +72,7 @@ export class UserService {
         },
       }),
     };
+    console.log(where);
 
     const users = await this.prisma.user.findMany({
       skip: offset,

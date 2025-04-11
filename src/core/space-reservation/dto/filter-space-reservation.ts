@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class FindAllSpaceReservationDto {
   @IsOptional()
@@ -22,4 +22,8 @@ export class FindAllSpaceReservationDto {
   @Type(() => Number)
   @IsInt()
   condominiumId?: number;
+
+  @IsArray()
+  @IsOptional()
+  condominiumIds?: number[];
 }
