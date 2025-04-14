@@ -12,7 +12,7 @@ export class SpaceReservationService {
 
   async create(createSpaceReservationDto: CreateSpaceReservationDto) {
     const { condominiumId, ...data } = createSpaceReservationDto;
-    const spaceReservation = this.prisma.spaceReservation.create({
+    const spaceReservation = await this.prisma.spaceReservation.create({
       data: {
         ...data,
         condominium: { connect: { id: condominiumId } },

@@ -133,7 +133,11 @@ export class QueryContextInterceptor implements NestInterceptor {
       // Obtém o valor e injeta na query
       const value = rule.getValue(user);
       if (value !== undefined && value !== null) {
-        query[fieldName] = value;
+        query[fieldName] = Array.isArray(value)
+          ? value.map((v) => (typeof v === 'string' ? Number(v) : v))
+          : typeof value === 'string'
+            ? Number(value)
+            : value;
       }
     }
   }

@@ -42,7 +42,7 @@ export class ApartmentService {
     const where: Prisma.ApartmentWhereInput = {};
 
     if (condominiumIds && condominiumIds.length > 0) {
-      where.condominiumId = { in: condominiumIds };
+      where.condominiumId = { in: condominiumIds.map((id) => Number(id)) };
     }
 
     if (name) {

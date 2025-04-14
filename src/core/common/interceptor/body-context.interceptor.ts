@@ -133,7 +133,11 @@ export class BodyContextInterceptor implements NestInterceptor {
       // Obtém o valor e injeta no body
       const value = rule.getValue(user);
       if (value !== undefined && value !== null) {
-        body[fieldName] = value;
+        body[fieldName] = Array.isArray(value)
+          ? value.map((v) => (typeof v === 'string' ? Number(v) : v))
+          : typeof value === 'string'
+            ? Number(value)
+            : value;
       }
     }
   }

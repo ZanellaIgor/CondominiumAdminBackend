@@ -24,6 +24,7 @@ export class FindAllSpaceReservationDto {
   condominiumId?: number;
 
   @IsArray()
+  @Type(() => Number)
   @IsOptional()
   condominiumIds?: number[];
 }
